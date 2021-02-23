@@ -7,7 +7,7 @@ package com.ss.craig.week.one.monday.a;
  * @author Craig Saunders
  *
  */
-public class Main{
+public class Main {
 
 	/**
 	 * @param args
@@ -15,5 +15,4 @@ public class Main{
 	public static void main(String[] args) {
 		new PatternAssignment();
 	}
-
 }

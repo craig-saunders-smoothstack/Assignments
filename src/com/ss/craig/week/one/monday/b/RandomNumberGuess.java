@@ -14,7 +14,7 @@ public class RandomNumberGuess {
 	private int random_number = 0;
 	
 	/**
-	 * Creates the random number and runs the loop
+	 * Constructor creates the random number and runs the loop
 	 */
 	public RandomNumberGuess() {
 		random_number = (int)(Math.random() * (100-1) + 1);

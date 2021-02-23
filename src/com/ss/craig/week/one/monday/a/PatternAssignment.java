@@ -3,6 +3,10 @@
  */
 package com.ss.craig.week.one.monday.a;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Craig Saunders
  * Prints the specified patterns in the assignment
@@ -15,33 +19,44 @@ public class PatternAssignment {
 	public PatternAssignment()
 	{
 			// counting the periods manually is important here as each are different per pattern
-			System.out.println("1)");
-			printLine(0,1,'*');
-			printLine(0,2,'*');
-			printLine(0,3,'*');
-			printLine(0,4,'*');
-			printLine(0,9,'.');
-			printLine(0,0,' ');
-			System.out.println("2)");
-			printLine(0,10,'.');
-			printLine(0,4,'*');
-			printLine(0,3,'*');
-			printLine(0,2,'*');
-			printLine(0,1,'*');
-			printLine(0,0,' ');
-			System.out.println("3)");
-			printLine(5,6,'*');
-			printLine(4,7,'*');
-			printLine(3,8,'*');
-			printLine(2,9,'*');
-			printLine(0,11,'.');
-			printLine(0,0,' ');
-			System.out.println("4)");
-			printLine(0,12,'.');
-			printLine(2,9,'*');
-			printLine(3,8,'*');
-			printLine(4,7,'*');
-			printLine(5,6,'*');
+			for (int i = 1; i <= 4; i++)
+			{
+				System.out.println(Integer.toString(i)+")");
+				if (i % 2 == 0) {
+					printLine(0,9+i-1,'.');
+				}
+				printStars(i);
+				if (i % 2 != 0) {
+					printLine(0,9+i-1,'.');
+				}
+				printLine(0,0,' ');
+			}
+	}
+	
+	private void printStars(int pattern)
+	{
+		List<Integer> one_two_length = Arrays.asList(1,2,3,4);
+		List<Integer> three_four_start = Arrays.asList(5,4,3,2);
+		List<Integer> three_four_length = Arrays.asList(6,7,8,9);
+		if (pattern == 1 || pattern == 2)
+		{
+			if (pattern == 2) {
+				Collections.reverse(one_two_length);
+			}
+			for(int length: one_two_length) {
+				printLine(0,length,'*');
+			}
+		}
+		else if (pattern == 3 || pattern == 4)
+		{			
+			if (pattern == 4) {
+				Collections.reverse(three_four_start);
+				Collections.reverse(three_four_length);
+			}
+			for(int i = 0; i < three_four_start.size(); i++) {				
+				printLine(three_four_start.get(i),three_four_length.get(i),'*');
+			}			
+		}
 	}
 	
 	/**
