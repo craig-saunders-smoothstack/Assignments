@@ -13,13 +13,15 @@ import java.util.List;
  */
 public class PatternAssignment {
 
+	private int last_count = 0;
 	/**
+	 * @param loops
 	 * Constructor prints out the assignment
 	 */
-	public PatternAssignment()
+	public PatternAssignment(int loops)
 	{
 		// counting the periods manually is important here as each are different per pattern
-		for (int i = 1; i <= 4; i++)
+		for (int i = 1; i <= loops; i++)
 		{
 			System.out.println(Integer.toString(i)+")"); // print line number
 			if (i % 2 == 0) {
@@ -34,40 +36,39 @@ public class PatternAssignment {
 	}
 	
 	/**
-	 * Prints the specified stars pattern
 	 * @param pattern
+	 * Prints the specified stars pattern
 	 */
-	private void printStars(int pattern)
+	private void printStars(int count)
 	{
-		List<Integer> one_two_length = Arrays.asList(1,2,3,4);
-		List<Integer> three_four_start = Arrays.asList(5,4,3,2);
-		List<Integer> three_four_length = Arrays.asList(6,7,8,9);
-		if (pattern == 1 || pattern == 2)
-		{
-			if (pattern == 2) {
-				Collections.reverse(one_two_length);
-			}
-			for(int length: one_two_length) {
-				printLine(0,length,'*');
-			}
+		// offset pattern number so 0 is the first pass for start (pattern - 1)
+		int start = (count-2)+(count-2)*4;
+		if (start < 0) {
+			start = 0;
 		}
-		else if (pattern == 3 || pattern == 4)
-		{			
-			if (pattern == 4) {
-				Collections.reverse(three_four_start);
-				Collections.reverse(three_four_length);
-			}
-			for(int i = 0; i < three_four_start.size(); i++) {				
-				printLine(three_four_start.get(i),three_four_length.get(i),'*');
-			}			
+		else if (count % 2 == 0) {
+			start = last_count;
+		}
+		last_count = start;
+		List<Integer> backward = Arrays.asList(0,0,0,0); // start with zero list 
+		if (count-1 > 0) { // first backward list counts down from 0
+			backward = Arrays.asList(start, start-1, start-2, start-3);
+		}
+		List<Integer> forward = Arrays.asList(start+1, start+2, start+3, start+4);
+		if (count % 2 == 0) {
+			Collections.reverse(backward);
+			Collections.reverse(forward);
+		}
+		for(int i = 0; i < backward.size(); i++) {				
+			printLine(backward.get(i),forward.get(i),'*');
 		}
 	}
 	
 	/**
-	 * Builds then prints a line with specified character
 	 * @param start
 	 * @param length
 	 * @param character
+	 * Builds then prints a line with specified character
 	 */
 	private void printLine(int start, int length, char character) {
 		String line = "";
