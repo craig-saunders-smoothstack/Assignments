@@ -18,21 +18,25 @@ public class PatternAssignment {
 	 */
 	public PatternAssignment()
 	{
-			// counting the periods manually is important here as each are different per pattern
-			for (int i = 1; i <= 4; i++)
-			{
-				System.out.println(Integer.toString(i)+")");
-				if (i % 2 == 0) {
-					printLine(0,9+i-1,'.');
-				}
-				printStars(i);
-				if (i % 2 != 0) {
-					printLine(0,9+i-1,'.');
-				}
-				printLine(0,0,' ');
+		// counting the periods manually is important here as each are different per pattern
+		for (int i = 1; i <= 4; i++)
+		{
+			System.out.println(Integer.toString(i)+")"); // print line number
+			if (i % 2 == 0) {
+				printLine(0,9+i-1,'.'); // print first if even
 			}
+			printStars(i); // print... stars
+			if (i % 2 != 0) {
+				printLine(0,9+i-1,'.'); // print last if odd
+			}
+			printLine(0,0,' '); // print empty line
+		}
 	}
 	
+	/**
+	 * Prints the specified stars pattern
+	 * @param pattern
+	 */
 	private void printStars(int pattern)
 	{
 		List<Integer> one_two_length = Arrays.asList(1,2,3,4);
