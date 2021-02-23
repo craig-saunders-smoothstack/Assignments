@@ -4,7 +4,7 @@
 package com.ss.craig.week.one.monday.b;
 
 /**
- * @author craig
+ * @author Craig Saunders
  *
  */
 public class Main {

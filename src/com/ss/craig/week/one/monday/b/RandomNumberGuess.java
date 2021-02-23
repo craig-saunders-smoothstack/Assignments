@@ -6,22 +6,28 @@ package com.ss.craig.week.one.monday.b;
 import java.util.Scanner;
 
 /**
- * @author craig
- *
+ * @author Craig Saunders
+ * Creates a random number and runs the guessing loop
  */
 public class RandomNumberGuess {
 
 	private int random_number = 0;
 	
+	/**
+	 * Creates the random number and runs the loop
+	 */
 	public RandomNumberGuess() {
 		random_number = (int)(Math.random() * (100-1) + 1);
 		run();
 	}
 	
+	/**
+	 * Runs the guessing loop for the user
+	 */
 	private void run()
 	{
 		boolean correct_guess = false;
-		Scanner sc=new Scanner(System.in); 
+		Scanner sc= new Scanner(System.in); 
 		for (int i = 0; i < 5; i++)
 		{
 			if (i == 0) {
@@ -31,11 +37,12 @@ public class RandomNumberGuess {
 				System.out.println("Wrong number, please try again?");
 			}
 			int input = 0;
+			// this try catch wasn't in the directions of the assignment, but still necessary
 			try {
 				input = sc.nextInt();
 			} catch(Exception e) {
 				System.out.println(e.getLocalizedMessage());
-				sc.close();
+				sc.close();  // don't forget to close the input scanner on exception
 				return;
 			}
 			if (input >= random_number - 10 && input <= random_number + 10) {

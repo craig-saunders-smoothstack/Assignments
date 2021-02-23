@@ -14,6 +14,7 @@ public class PatternAssignment {
 	 */
 	public PatternAssignment()
 	{
+			// counting the periods manually is important here as each are different per pattern
 			System.out.println("1)");
 			printLine(0,1,'*');
 			printLine(0,2,'*');
