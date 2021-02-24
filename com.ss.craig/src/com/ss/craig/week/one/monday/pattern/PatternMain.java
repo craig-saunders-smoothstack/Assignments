@@ -1,7 +1,7 @@
 /**
  * Day one, assignment one: Print the pattern
  */
-package com.ss.craig.week.one.monday.a;
+package com.ss.craig.week.one.monday.pattern;
 
 /**
  * @author Craig Saunders

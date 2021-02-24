@@ -1,7 +1,7 @@
 /**
  * Random number guessing assignment
  */
-package com.ss.craig.week.one.monday.b;
+package com.ss.craig.week.one.monday.rng;
 
 /**
  * @author Craig Saunders
