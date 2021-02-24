@@ -7,7 +7,7 @@ package com.ss.craig.week.one.monday.b;
  * @author Craig Saunders
  *
  */
-public class Main {
+public class RNGMain {
 
 	/**
 	 * @param args
