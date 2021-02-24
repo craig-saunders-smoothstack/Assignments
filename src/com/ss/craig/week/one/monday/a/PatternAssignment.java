@@ -63,15 +63,15 @@ public class PatternAssignment {
 	 * Builds then prints a line with specified character
 	 */
 	private void printLine(int start, int length, char character) {
-		String line = "";
-		for (int i = 0; i < length; i++) {	
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++){	
 			if (i >= start) {
-				line += character;
+				sb.append(character);
 			}
 			else {
-				line += ' ';
+		    	sb.append(' ');
 			}
-		}	
-		System.out.println(line);
+        }
+		System.out.println(sb.toString());
 	}
 }
