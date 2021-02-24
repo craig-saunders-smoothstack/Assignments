@@ -12,8 +12,6 @@ import java.util.List;
  * Prints the specified patterns in the assignment
  */
 public class PatternAssignment {
-
-	private int last_count = 0;
 	/**
 	 * @param loops
 	 * Constructor prints out the assignment
@@ -43,9 +41,6 @@ public class PatternAssignment {
 	{
 		int start = ((count-1)/2*5);
 		start = start < 0 ? 0 : start;
-		if (count % 2 == 0) {
-			start = last_count;
-		}
 			
 		List<Integer> backward = Arrays.asList(0,0,0,0); // start with zero list 
 		if (count > 2) { // first backward list counts down from 0
@@ -58,9 +53,6 @@ public class PatternAssignment {
 		}
 		for(int i = 0; i < backward.size(); i++) {				
 			printLine(backward.get(i),forward.get(i),'*');
-		}
-		if (count != 1 && count % 2 != 0) {
-			last_count = start;
 		}
 	}
 	
