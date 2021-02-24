@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class PatternAssignment {
 	/**
-	 * @param loops
 	 * Constructor prints out the assignment
+	 * @param loops : Amount of times to repeat the pattern
 	 */
 	public PatternAssignment(int loops)
 	{
@@ -25,7 +25,13 @@ public class PatternAssignment {
 			if (i % 2 == 0) {
 				printLine(0,9+i-1,'.'); // print first if even
 			}
-			printStars(i); // print... stars
+			try {
+				printStars(i); // print... stars
+			}
+			catch (Exception e)
+			{
+				System.out.println(e.getLocalizedMessage());
+			}
 			if (i % 2 != 0) {
 				printLine(0,9+i-1,'.'); // print last if odd
 			}
@@ -34,17 +40,19 @@ public class PatternAssignment {
 	}
 	
 	/**
-	 * @param pattern
 	 * Prints the specified stars pattern
+	 * @param count : loop counter
 	 */
-	private void printStars(int count)
+	private void printStars(int count) throws NullPointerException, UnsupportedOperationException, IndexOutOfBoundsException
 	{
 		int start = ((count-1)/2*5);
 		start = start < 0 ? 0 : start;
-			
-		List<Integer> backward = Arrays.asList(0,0,0,0); // start with zero list 
+		List<Integer> backward;
 		if (count > 2) { // first backward list counts down from 0
 			backward = Arrays.asList(start, start-1, start-2, start-3);
+		}
+		else {
+			backward = Arrays.asList(0,0,0,0); // start with zero list 
 		}
 		List<Integer> forward = Arrays.asList(start+1, start+2, start+3, start+4);
 		if (count % 2 == 0) {
@@ -57,21 +65,24 @@ public class PatternAssignment {
 	}
 	
 	/**
-	 * @param start
-	 * @param length
-	 * @param character
 	 * Builds then prints a line with specified character
+	 * @param start : When the character provided should begin adding to the string
+	 * @param length : length of the string
+	 * @param character : provided character to fill for the pattern
 	 */
 	private void printLine(int start, int length, char character) {
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++){	
-			if (i >= start) {
-				sb.append(character);
-			}
-			else {
-		    	sb.append(' ');
-			}
-        }
-		System.out.println(sb.toString());
+		if (length >= 0)
+		{
+	        StringBuilder sb = new StringBuilder(length);
+	        for (int i = 0; i < length; i++){	
+				if (i >= start) {
+					sb.append(character);
+				}
+				else {
+			    	sb.append(' ');
+				}
+	        }
+			System.out.println(sb.toString());
+		}
 	}
 }
