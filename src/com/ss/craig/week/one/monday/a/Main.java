@@ -8,12 +8,11 @@ package com.ss.craig.week.one.monday.a;
  *
  */
 public class Main {
-	private static int num_loops = 4;
+	private static int num_loops;
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		num_loops = 4;
 		try {
 			num_loops = Integer.parseInt(args[0]);
 		}

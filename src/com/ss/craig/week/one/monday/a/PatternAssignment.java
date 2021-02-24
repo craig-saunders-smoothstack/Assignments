@@ -41,17 +41,14 @@ public class PatternAssignment {
 	 */
 	private void printStars(int count)
 	{
-		// offset pattern number so 0 is the first pass for start (pattern - 1)
-		int start = (count-2)+(count-2)*4;
-		if (start < 0) {
-			start = 0;
-		}
-		else if (count % 2 == 0) {
+		int start = ((count-1)/2*5);
+		start = start < 0 ? 0 : start;
+		if (count % 2 == 0) {
 			start = last_count;
 		}
-		last_count = start;
+			
 		List<Integer> backward = Arrays.asList(0,0,0,0); // start with zero list 
-		if (count-1 > 0) { // first backward list counts down from 0
+		if (count > 2) { // first backward list counts down from 0
 			backward = Arrays.asList(start, start-1, start-2, start-3);
 		}
 		List<Integer> forward = Arrays.asList(start+1, start+2, start+3, start+4);
@@ -61,6 +58,9 @@ public class PatternAssignment {
 		}
 		for(int i = 0; i < backward.size(); i++) {				
 			printLine(backward.get(i),forward.get(i),'*');
+		}
+		if (count != 1 && count % 2 != 0) {
+			last_count = start;
 		}
 	}
 	
