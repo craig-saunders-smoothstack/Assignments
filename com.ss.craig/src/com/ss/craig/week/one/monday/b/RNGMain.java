@@ -9,10 +9,10 @@ package com.ss.craig.week.one.monday.b;
  */
 public class RNGMain {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new RandomNumberGuess();
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        new RandomNumberGuess();
+    }
 }
