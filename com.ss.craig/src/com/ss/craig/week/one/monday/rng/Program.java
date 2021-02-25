@@ -7,12 +7,13 @@ package com.ss.craig.week.one.monday.rng;
  * @author Craig Saunders
  *
  */
-public class RNGMain {
+public class Program {
 
     /**
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         new RandomNumberGuess();
     }
 }

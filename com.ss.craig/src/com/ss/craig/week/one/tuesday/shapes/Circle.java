@@ -12,12 +12,27 @@ public class Circle implements Shapes {
     private double radius = 0d;
 
     /* Getters and Setters */
-    public double getRadius() { return radius; }
-    public void setRadius(double radius) { this.radius = radius; }
+    public double getRadius()
+    {
+        return radius;
+    }
+
+    public void setRadius(double radius)
+    {
+        this.radius = radius;
+    }
+
     @Override
-    public double getArea() { return area; }    
+    public double getArea()
+    {
+        return area;
+    }
+
     @Override
-    public void setArea() { this.area = calculateArea(); }
+    public void setArea()
+    {
+        this.area = calculateArea();
+    }
     /* End Getters and Setters */
 
     public Circle(double radius)
@@ -26,16 +41,18 @@ public class Circle implements Shapes {
         setArea();
         display();
     }
-    
+
     @Override
-    public void display() {
+    public void display()
+    {
         System.out.println("Circle");
-        System.out.println("Total Area: "+Double.toString(calculateArea()));  
+        System.out.println("Total Area: " + Double.toString(calculateArea()));
         System.out.println();
     }
 
     @Override
-    public double calculateArea() {
-        return Math.pow(radius,2)*Math.PI;
+    public double calculateArea()
+    {
+        return Math.pow(radius, 2) * Math.PI;
     }
 }

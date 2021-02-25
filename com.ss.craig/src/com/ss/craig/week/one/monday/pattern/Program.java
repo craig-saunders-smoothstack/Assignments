@@ -7,7 +7,7 @@ package com.ss.craig.week.one.monday.pattern;
  * @author Craig Saunders
  *
  */
-public class PatternMain {
+public class Program {
     private static int num_loops;
 
     /**

@@ -7,12 +7,13 @@ package com.ss.craig.week.one.tuesday.maxnumber;
  * @author Craig Saunders
  *
  */
-public class MaxNumberMain {
+public class Program {
 
-    /** 
+    /**
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         new MaxNumber();
     }
 }

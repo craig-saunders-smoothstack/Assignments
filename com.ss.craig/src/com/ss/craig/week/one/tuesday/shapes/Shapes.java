@@ -9,7 +9,10 @@ package com.ss.craig.week.one.tuesday.shapes;
  */
 public interface Shapes {
     public double getArea();
+
     public void setArea();
+
     public void display();
+
     public double calculateArea();
 }

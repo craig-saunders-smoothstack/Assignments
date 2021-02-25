@@ -11,24 +11,32 @@ import java.util.Scanner;
  */
 public class ArgsSum {
 
-    /** Sums all double casted args with number values and displays the sum
+    /**
+     * Sums all double casted args with number values and displays the sum
+     * 
      * @param args : array of numbers as strings to add together and display
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         Double sum = 0d; // using double as it holds the largest negative and positive decimal numbers
         Scanner sc;
-        for(String arg: args)
+        for (String arg : args)
         {
             sc = new Scanner(arg);
-            try {
-                if (sc.hasNextDouble()) {
+            try
+            {
+                if (sc.hasNextDouble())
+                {
                     sum += sc.nextDouble();
                 }
-            } catch (Exception e) {
             }
-            finally {
-                sc.close();  
-            }          
+            catch (Exception e)
+            {
+            }
+            finally
+            {
+                sc.close();
+            }
         }
         System.out.println(Double.toString(sum));
     }
