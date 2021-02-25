@@ -10,8 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import com.ss.craig.week.one.wednesday.appendtextfile.AppendTextFile;
-
 /**
  * @author Craig Saunders
  *
@@ -24,8 +22,8 @@ public class CharacterCount {
      */
     public static void main(String[] args)
     {
-        String file_path = AppendTextFile.getStringFromArgs(args, 0);
-        String look_for = AppendTextFile.getStringFromArgs(args, 1);
+        String file_path = getStringFromArgs(args, 0);
+        String look_for = getStringFromArgs(args, 1);
 
         if (!file_path.equals(null))
         {
@@ -74,5 +72,19 @@ public class CharacterCount {
     private static void addToCount(Long amount)
     {
         count += amount;
+    }
+
+    /**
+     * @param args  : args from main
+     * @param index : specific index
+     * @return
+     */
+    public static String getStringFromArgs(String[] args, int index)
+    {
+        if (!args.equals(null) && args.length > 0 && !args[index].equals(null))
+        {
+            return args[index];
+        }
+        return null;
     }
 }
