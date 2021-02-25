@@ -10,9 +10,7 @@ package com.ss.craig.week.one.wednesday.appendtextfile;
 public class Program {
 
     /**
-     * @param args 
-     * @args[0] : file path
-     * @args[1] : text to append
+     * @param args @args[0] : file path @args[1] : text to append
      */
     public static void main(String[] args)
     {

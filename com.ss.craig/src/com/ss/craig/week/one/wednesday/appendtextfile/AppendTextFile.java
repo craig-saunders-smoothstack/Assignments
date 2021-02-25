@@ -17,6 +17,7 @@ public abstract class AppendTextFile {
 
     /**
      * Appends text specified to the directory specified
+     * 
      * @param args : args from static main
      */
     public static void appendText(String[] args)
@@ -67,17 +68,17 @@ public abstract class AppendTextFile {
             scnr.close();
         }
         String text = getStringFromArgs(args, 1);
-        BufferedWriter br = null;
+        BufferedWriter bw = null;
         try
         {
-            br = new BufferedWriter(new FileWriter(file_path,true));
-        
-            if (br != null)
+            bw = new BufferedWriter(new FileWriter(file_path, true));
+
+            if (bw != null)
             {
-                br.append(text);
-                System.out.println("Text appended to: "+file_path+" Exiting...");
+                bw.append(text);
+                System.out.println("Text appended to: " + file_path + " Exiting...");
             }
-            br.close();
+            bw.close();
         }
         catch (IOException e)
         {
@@ -85,13 +86,13 @@ public abstract class AppendTextFile {
             System.out.println("An IO Exception occurred. Exiting...");
         }
     }
-    
+
     /**
-     * @param args : args from main
+     * @param args  : args from main
      * @param index : specific index
      * @return
      */
-    private static String getStringFromArgs(String[] args, int index)
+    public static String getStringFromArgs(String[] args, int index)
     {
         if (!args.equals(null) && args.length > 0 && !args[index].equals(null))
         {
