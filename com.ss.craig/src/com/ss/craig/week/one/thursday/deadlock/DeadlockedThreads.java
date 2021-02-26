@@ -47,7 +47,8 @@ public class DeadlockedThreads {
                     {
                         Thread.sleep(100);
                         synchronized (shiny_two)
-                        {
+                        {   
+                            // this never happens because of deadlock
                             shiny_two.takeBackWhatIsMine(shiny_one.shiny);
                         }
                     }
