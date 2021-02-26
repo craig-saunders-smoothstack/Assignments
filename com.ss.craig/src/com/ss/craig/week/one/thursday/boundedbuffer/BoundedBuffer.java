@@ -12,21 +12,23 @@ import java.util.Scanner;
  *
  */
 public class BoundedBuffer {
-    private final static int min_sleep_seconds = 1; 
-    private final static int max_sleep_seconds = 8; 
+    private final static int min_sleep_seconds = 1;
+    private final static int max_sleep_seconds = 8;
     private static boolean resume = true;
     private static int max_buffer_size = 2;
     private static boolean p_running = true;
     private static boolean c_running = true;
     private static boolean t_running = true;
+
     /**
      * @param args
      */
     public static void main(String[] args)
     {
         List<Integer> boundedBuffer = new ArrayList<>();
-        
-        // Producer producing random ints at a max of 4 total, but should only be capable of 2
+
+        // Producer producing random ints at a max of 4 total, but should only be
+        // capable of 2
         Runnable producer = new Runnable() {
             @Override
             public void run()
@@ -39,7 +41,7 @@ public class BoundedBuffer {
                     }
                     try
                     {
-                        Thread.sleep(getRandomInt(min_sleep_seconds*1000, max_sleep_seconds*1000));
+                        Thread.sleep(getRandomInt(min_sleep_seconds * 1000, max_sleep_seconds * 1000));
                     }
                     catch (Exception e)
                     {
@@ -50,7 +52,7 @@ public class BoundedBuffer {
                 System.out.println("Producer thread stopped.");
             }
         };
-        
+
         // Consumer consuming all in the buffer every possible max buffer
         Runnable consumer = new Runnable() {
             @Override
@@ -58,15 +60,15 @@ public class BoundedBuffer {
             {
                 while (resume)
                 {
-                    if(boundedBuffer.size() > 0)
+                    if (boundedBuffer.size() > 0)
                     {
-                        System.out.println(boundedBuffer.remove(boundedBuffer.size()-1));
+                        System.out.println(boundedBuffer.remove(boundedBuffer.size() - 1));
                     }
                     else
                     {
                         try
                         {
-                            Thread.sleep(min_sleep_seconds*max_buffer_size*1000);
+                            Thread.sleep(min_sleep_seconds * max_buffer_size * 1000);
                         }
                         catch (Exception e)
                         {
@@ -78,7 +80,7 @@ public class BoundedBuffer {
                 System.out.println("Consumer thread stopped.");
             }
         };
-        
+
         // Timer thread to keep track of time while outputting the integers
         Runnable second_timer_display = new Runnable() {
             @Override
@@ -105,14 +107,14 @@ public class BoundedBuffer {
         new Thread(producer).start();
         new Thread(consumer).start();
         new Thread(second_timer_display).start();
-        
+
         System.out.println("Enter any key to stop the program:");
         Scanner scnr = new Scanner(System.in);
         if (scnr.hasNext())
         {
             resume = false;
         }
-        
+
         try
         {
             scnr.close();
@@ -126,12 +128,13 @@ public class BoundedBuffer {
         {
             e.printStackTrace();
         }
-        
+
         System.out.println("Threads stopped: Exiting...");
     }
 
     /**
      * Get a random integer
+     * 
      * @param min
      * @param max
      * @return Returns a random integer from min to max
@@ -140,5 +143,5 @@ public class BoundedBuffer {
     {
         return (int) (Math.random() * (max - min) + min);
     }
-    
+
 }
