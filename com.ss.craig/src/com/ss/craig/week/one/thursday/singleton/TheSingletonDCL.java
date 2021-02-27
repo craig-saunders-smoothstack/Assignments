@@ -25,7 +25,7 @@ public class TheSingletonDCL {
      * 
      * @return : returns the one and only instance this program will ever need
      */
-    synchronized public static TheSingletonDCL getInstance()
+    public static TheSingletonDCL getInstance()
     {
         // Double check locking
         if (instance == null)
