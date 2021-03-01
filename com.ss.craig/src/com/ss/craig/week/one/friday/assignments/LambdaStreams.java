@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
  * @author Craig Saunders
  *
  */
-public class LambdaStreams extends InputUtility{
+public class LambdaStreams extends InputUtility {
     private final String[] UNSORTED_ARRAY;
 
     private final String[] ARRAY_OF_STRINGS;
 
     private final Integer[] ARRAY_OF_INTEGERS;
-    
+
     private final String[] OPTIONS;
 
     /**
@@ -30,7 +30,7 @@ public class LambdaStreams extends InputUtility{
     {
         return ARRAY_OF_INTEGERS;
     }
-    
+
     /**
      * @return Returns a predefined final list of strings
      */
@@ -55,18 +55,15 @@ public class LambdaStreams extends InputUtility{
             Arrays.asList(s.split(" ")).stream().forEach(str -> unsorted_words.add(str));
         });
         ARRAY_OF_STRINGS = unsorted_words.toArray(new String[unsorted_words.size()]);
-        OPTIONS = new String[] {"Choose your output:",
-                "0: None - Go back to main menu",
-                "1: Unsorted list",
-                "2: Sorted list by length",
-                "3: Sorted list by reverse length",
-                "4: Alphabetically sorted list",
+        OPTIONS = new String[] { "Choose your output:", "0: None - Go back to main menu", "1: Unsorted list",
+                "2: Sorted list by length", "3: Sorted list by reverse length", "4: Alphabetically sorted list",
                 "5: Sorted list sorting strings starting with 'e' first",
-                "6: Sorted list same as 6 but with helper method"};
+                "6: Sorted list same as 6 but with helper method" };
     }
-    
-    /** 
+
+    /**
      * Default starting character limiter and length set for assignment
+     * 
      * @param string_list : The string list to pull from
      * @return Returns the list of strings filtered through
      */
@@ -74,9 +71,10 @@ public class LambdaStreams extends InputUtility{
     {
         return getLimitListFromList(string_list, 'a');
     }
-    
-    /** 
+
+    /**
      * Default starting character limiter and length set for assignment
+     * 
      * @param string_list : The string list to pull from
      * @return Returns the list of strings filtered through
      */
@@ -84,9 +82,10 @@ public class LambdaStreams extends InputUtility{
     {
         return getLimitListFromList(Arrays.asList(string_array));
     }
-    
-    /** 
+
+    /**
      * Default length set for assignment
+     * 
      * @param string_list : The string list to pull from
      * @param starts_with : The character to compare against
      * @return Returns the list of strings filtered through
@@ -97,17 +96,18 @@ public class LambdaStreams extends InputUtility{
     }
 
     /**
-     * Dynamic function capable of allowing more than just the assignment input of string list
-     * @param string_list : The string list to pull from
-     * @param starts_with : The character to compare against
+     * Dynamic function capable of allowing more than just the assignment input of
+     * string list
+     * 
+     * @param string_list  : The string list to pull from
+     * @param starts_with  : The character to compare against
      * @param length_limit : The length of the string in the list that is allowed
      * @return Returns the list of strings filtered through
      */
     public List<String> getLimitListFromList(List<String> string_list, char starts_with, int length_limit)
     {
 
-        return string_list.stream()
-                .filter(p -> p.length() == length_limit && p.charAt(0) == starts_with)
+        return string_list.stream().filter(p -> p.length() == length_limit && p.charAt(0) == starts_with)
                 .collect(Collectors.toList());
     }
 
@@ -121,7 +121,7 @@ public class LambdaStreams extends InputUtility{
         {
             StringBuilder sb = new StringBuilder();
             int_list.stream().forEach(i -> sb.append((i % 2 == 0 ? "e" + i : "o" + i) + ","));
-            return sb.delete(sb.length()-1, sb.length()).toString();
+            return sb.delete(sb.length() - 1, sb.length()).toString();
         }
         catch (Exception e)
         {

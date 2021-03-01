@@ -24,53 +24,54 @@ import junit.framework.TestCase;
  *
  */
 @RunWith(value = BlockJUnit4ClassRunner.class)
-public class SampleSingletonTest extends TestCase{
+public class SampleSingletonTest extends TestCase {
     public final int threads = 10;
-    public final CyclicBarrier gate= new CyclicBarrier(10 + 1);
+    public final CyclicBarrier gate = new CyclicBarrier(10 + 1);
     public static SampleSingleton ss_instance;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    
+
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception
-    {        
+    {
         for (int i = 0; i < threads; i++)
         {
-            new Thread(new Runnable () {
+            new Thread(new Runnable() {
                 @Override
                 public void run()
                 {
-                        //System.out.println("waiting");
-                        try
-                        {
-                            gate.await();
-                        }
-                        catch (InterruptedException | BrokenBarrierException e)
-                        {
-                            e.printStackTrace();
-                        }
-                        //System.out.println("running");
-                    ss_instance = SampleSingleton.getInstance();             
+                    // System.out.println("waiting");
+                    try
+                    {
+                        gate.await();
+                    }
+                    catch (InterruptedException | BrokenBarrierException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    // System.out.println("running");
+                    ss_instance = SampleSingleton.getInstance();
                 }
-                
+
             }).start();
-        }                    
-        
+        }
+
         try
         {
             // If this sleep wasn't here, it'd break because the last gate.await after it
             // would come up before the other threads finish
             Thread.sleep(100);
             gate.await();
-            //System.out.println("Done Waiting");
-            
-            // If this sleep wasn't here, it'd break because of ss_instance being partially initialized
+            // System.out.println("Done Waiting");
+
+            // If this sleep wasn't here, it'd break because of ss_instance being partially
+            // initialized
             // resulting in a null being passed on
-            Thread.sleep(100); 
+            Thread.sleep(100);
         }
         catch (InterruptedException | BrokenBarrierException e)
         {

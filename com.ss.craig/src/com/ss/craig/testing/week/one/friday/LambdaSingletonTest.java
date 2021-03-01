@@ -19,10 +19,10 @@ import com.ss.craig.week.one.friday.assignments.LambdaSingleton;
  */
 public class LambdaSingletonTest {
     LambdaSingleton instance;
-    
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    
+
     /**
      * @throws java.lang.Exception
      */

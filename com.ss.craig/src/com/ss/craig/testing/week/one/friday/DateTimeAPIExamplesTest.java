@@ -25,10 +25,10 @@ import com.ss.craig.week.one.friday.assignments.DateTimeAPIExamples;
  */
 public class DateTimeAPIExamplesTest {
     public DateTimeAPIExamples dtae = new DateTimeAPIExamples();
-    
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -43,9 +43,12 @@ public class DateTimeAPIExamplesTest {
         assertEquals(dtae.BIRTHDAY, dtae.getBirthdayInNanoSeconds());
         assertEquals(1970, dtae.getRandomDate(0).getYear());
         assertEquals(DayOfWeek.THURSDAY, dtae.getPreviousThursday(dtae.getRandomDate(8000)).getDayOfWeek());
-        assertEquals(Instant.ofEpochSecond(10000000), dtae.getZonedDateTime(Instant.ofEpochSecond(10000000), ZoneId.systemDefault()).toInstant());
-        assertEquals(Instant.ofEpochSecond(100600000), dtae.getInstant(dtae.getZonedDateTime(Instant.ofEpochSecond(100600000), ZoneId.systemDefault())));
-        assertEquals(ZoneId.systemDefault(), dtae.getZonedDateTime(Instant.ofEpochSecond(100600000), ZoneId.systemDefault()).getZone());
+        assertEquals(Instant.ofEpochSecond(10000000),
+                dtae.getZonedDateTime(Instant.ofEpochSecond(10000000), ZoneId.systemDefault()).toInstant());
+        assertEquals(Instant.ofEpochSecond(100600000),
+                dtae.getInstant(dtae.getZonedDateTime(Instant.ofEpochSecond(100600000), ZoneId.systemDefault())));
+        assertEquals(ZoneId.systemDefault(),
+                dtae.getZonedDateTime(Instant.ofEpochSecond(100600000), ZoneId.systemDefault()).getZone());
         assertEquals(false, dtae.isFridayThirteenth(LocalDate.of(2021, 2, 28)));
         assertEquals(true, dtae.isFridayThirteenth(LocalDate.of(2021, 8, 13)));
         assertTrue(dtae.printLengthOfAllMonthsInYear(2021));

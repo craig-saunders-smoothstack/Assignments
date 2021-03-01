@@ -14,7 +14,7 @@ import java.util.function.Function;
 public abstract class RightDigit {
     public static Function<List<Integer>, List<Integer>> rightDigit = (list) -> {
         List<Integer> remainder_list = new ArrayList<Integer>();
-        list.stream().forEach(i-> remainder_list.add(i%10));
+        list.stream().forEach(i -> remainder_list.add(i % 10));
         return remainder_list;
     };
 }

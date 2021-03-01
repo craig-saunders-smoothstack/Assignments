@@ -14,7 +14,7 @@ import java.util.function.Function;
 public abstract class Doubling {
     public static Function<List<Integer>, List<Integer>> doubling = (list) -> {
         List<Integer> remainder_list = new ArrayList<Integer>();
-        list.stream().forEach(i-> remainder_list.add(i*2));
+        list.stream().forEach(i -> remainder_list.add(i * 2));
         return remainder_list;
     };
 }

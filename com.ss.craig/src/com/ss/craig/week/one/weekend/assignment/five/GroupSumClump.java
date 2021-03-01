@@ -19,16 +19,20 @@ public class GroupSumClump {
         {
             return target == 0; // Returns the result boolean at the end of the recursion loop
         }
-        /* Populate the total with the current int_array value to reduce the need for
-           the first while loop. Also adds 1 to the index (with ++ proceeding the index variable) 
-           after initializing the total */
-        int total = int_array[index++];    
-        // compares the current index with the next one (index - 1 because of the index++ earlier)
+        /*
+         * Populate the total with the current int_array value to reduce the need for
+         * the first while loop. Also adds 1 to the index (with ++ proceeding the index
+         * variable) after initializing the total
+         */
+        int total = int_array[index++];
+        // compares the current index with the next one (index - 1 because of the
+        // index++ earlier)
         while (index < int_array.length && int_array[index - 1] == int_array[index])
         {
             total += int_array[index++]; // Another index++ to add one to the index afterwords
         }
-        // Continues to check the rest of the array, first using clumped sums and then without
+        // Continues to check the rest of the array, first using clumped sums and then
+        // without
         // if either one of these return true, then return true all the way back
         return groupSumClump(index, int_array, target - total) || groupSumClump(index, int_array, target);
     }

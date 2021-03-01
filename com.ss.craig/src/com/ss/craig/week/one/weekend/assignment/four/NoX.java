@@ -13,8 +13,8 @@ import java.util.function.Function;
  */
 public abstract class NoX {
     public Function<List<String>, List<String>> noX = (list) -> {
-      List<String> cleaned = new ArrayList<String>(); 
-      list.stream().forEach(s -> cleaned.add(s.replaceAll("x", "")));
-      return cleaned;
+        List<String> cleaned = new ArrayList<String>();
+        list.stream().forEach(s -> cleaned.add(s.replaceAll("x", "")));
+        return cleaned;
     };
 }

@@ -17,8 +17,9 @@ import com.ss.craig.week.one.weekend.assignment.two.RightDigit;
  * @author Craig Saunders
  *
  */
-public class RightDigitTest extends RightDigit{
+public class RightDigitTest extends RightDigit {
     List<Integer> non_negative_test;
+
     /**
      * @throws java.lang.Exception
      */
@@ -31,7 +32,8 @@ public class RightDigitTest extends RightDigit{
     @Test
     public void test()
     {
-        assertEquals(Arrays.asList(new Integer[] {1, 2, 3, 6, 8, 6, 8, 1, 0, 0, 7}), rightDigit.apply(non_negative_test));
+        assertEquals(Arrays.asList(new Integer[] { 1, 2, 3, 6, 8, 6, 8, 1, 0, 0, 7 }),
+                rightDigit.apply(non_negative_test));
     }
 
 }

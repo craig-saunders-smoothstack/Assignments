@@ -9,9 +9,9 @@ import java.util.function.Function;
  * @author Craig Saunders
  *
  */
-public abstract class PerformOperation {    
+public abstract class PerformOperation {
     public static Function<Integer, String> isOdd = (num) -> {
-        if(num % 2 == 0)
+        if (num % 2 == 0)
         {
             return "EVEN";
         }

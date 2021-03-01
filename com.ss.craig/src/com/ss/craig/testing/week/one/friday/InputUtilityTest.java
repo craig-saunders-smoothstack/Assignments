@@ -29,10 +29,10 @@ public class InputUtilityTest {
     @Test
     public void test()
     {
-        assertEquals(0, (int)InputUtility.getUserSelectionInteger(new ArrayList<String>()));
-        assertEquals(0, (int)InputUtility.getUserSelectionInteger(new String[] {}));
-        assertEquals(1, (int)InputUtility.getUserSelectionInteger(new String[] {"Type '1' for test"}));
-        assertEquals(0, (int)InputUtility.getUserSelectionInteger(new String[] {"Type 'a' for test"}));
+        assertEquals(0, (int) InputUtility.getUserSelectionInteger(new ArrayList<String>()));
+        assertEquals(0, (int) InputUtility.getUserSelectionInteger(new String[] {}));
+        assertEquals(1, (int) InputUtility.getUserSelectionInteger(new String[] { "Type '1' for test" }));
+        assertEquals(0, (int) InputUtility.getUserSelectionInteger(new String[] { "Type 'a' for test" }));
     }
 
 }
