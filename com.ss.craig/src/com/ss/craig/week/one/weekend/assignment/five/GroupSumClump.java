@@ -29,10 +29,7 @@ public class GroupSumClump {
             total += int_array[index++]; // Another index++ to add one to the index afterwords
         }
         // Continues to check the rest of the array, first using clumped sums and then without
-        if (groupSumClump(index, int_array, target - total) || groupSumClump(index, int_array, target))
-        {
-            return true; // if either one of these return true, then return true all the way back
-        }
-        return false; // Skipping the else since it's not needed here
+        // if either one of these return true, then return true all the way back
+        return groupSumClump(index, int_array, target - total) || groupSumClump(index, int_array, target);
     }
 }
