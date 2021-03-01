@@ -32,9 +32,9 @@ public class GroupSumClumpTest extends GroupSumClump{
     @Test
     public void test()
     {
-        assertTrue(groupSumClump(test_ints_true_one, 10));
-        assertTrue(groupSumClump(test_ints_true_two, 14));
-        assertFalse(groupSumClump(test_ints_false_one, 14));
+        assertTrue(groupSumClump(0,test_ints_true_one, 10));
+        assertTrue(groupSumClump(0,test_ints_true_two, 14));
+        assertFalse(groupSumClump(0,test_ints_false_one, 14));
     }
 
 }
