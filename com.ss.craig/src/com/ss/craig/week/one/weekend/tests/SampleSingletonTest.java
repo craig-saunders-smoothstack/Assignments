@@ -3,6 +3,7 @@
  */
 package com.ss.craig.week.one.weekend.tests;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -83,6 +84,7 @@ public class SampleSingletonTest extends TestCase{
         assertEquals(ss_instance, SampleSingleton.getInstance());
         assertEquals(SampleSingleton.getInstance(), SampleSingleton.getInstance());
         SampleSingleton.getConnection();
+        SampleSingleton.databaseQuery("SELECT * FROM table;", new BigDecimal(1));
     }
 
 }
