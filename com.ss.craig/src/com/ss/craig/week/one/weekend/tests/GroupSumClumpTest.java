@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignment.GroupSumClump;
+import com.ss.craig.week.one.weekend.assignments.GroupSumClump;
 
 /**
  * @author Craig Saunders

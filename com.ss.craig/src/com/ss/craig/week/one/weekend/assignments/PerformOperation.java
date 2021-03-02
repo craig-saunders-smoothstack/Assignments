@@ -1,7 +1,7 @@
 /**
  * Weekend Assignment 1: Lambdas
  */
-package com.ss.craig.week.one.weekend.assignment;
+package com.ss.craig.week.one.weekend.assignments;
 
 import java.util.List;
 import java.util.function.Function;

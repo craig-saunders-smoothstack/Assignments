@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignment.GroupedInterface;
+import com.ss.craig.week.one.weekend.assignments.GroupedInterface;
 
 /**
  * @author Craig Saunders

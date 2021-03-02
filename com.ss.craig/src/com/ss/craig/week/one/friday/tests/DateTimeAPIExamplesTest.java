@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ss.craig.testing.week.one.friday;
+package com.ss.craig.week.one.friday.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

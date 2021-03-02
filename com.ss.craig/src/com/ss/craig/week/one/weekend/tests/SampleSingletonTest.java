@@ -15,7 +15,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import com.ss.craig.week.one.weekend.assignment.SampleSingleton;
+import com.ss.craig.week.one.weekend.assignments.SampleSingleton;
 
 import junit.framework.TestCase;
 

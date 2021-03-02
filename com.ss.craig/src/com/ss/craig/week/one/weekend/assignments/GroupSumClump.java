@@ -4,7 +4,7 @@
  * if there are numbers in the array that are adjacent and the identical value, 
  * they must either all be chosen, or none of them chosen. 
  */
-package com.ss.craig.week.one.weekend.assignment;
+package com.ss.craig.week.one.weekend.assignments;
 
 /**
  * @author Craig Saunders

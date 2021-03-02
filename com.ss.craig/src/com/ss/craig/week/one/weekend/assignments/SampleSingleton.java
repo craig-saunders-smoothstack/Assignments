@@ -1,4 +1,4 @@
-package com.ss.craig.week.one.weekend.assignment;
+package com.ss.craig.week.one.weekend.assignments;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import java.math.BigDecimal;
