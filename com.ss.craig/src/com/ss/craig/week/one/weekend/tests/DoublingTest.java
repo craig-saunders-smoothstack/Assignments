@@ -12,13 +12,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignment.three.Doubling;
+import com.ss.craig.week.one.weekend.assignment.GroupedInterface;
 
 /**
  * @author Craig Saunders
  *
  */
-public class DoublingTest extends Doubling {
+public class DoublingTest implements GroupedInterface {
     public List<Integer> test_list;
 
     /**
@@ -33,8 +33,8 @@ public class DoublingTest extends Doubling {
     @Test
     public void test()
     {
-        assertEquals(Arrays.asList(new Integer[] { 2, 4, 6, 12, 16, 12, 16, -2 }), doubling.apply(test_list));
-        assertEquals(0, doubling.apply(new ArrayList<Integer>()).size());
+        assertEquals(Arrays.asList(new Integer[] { 2, 4, 6, 12, 16, 12, 16, -2 }), doubling(test_list));
+        assertEquals(0, doubling(new ArrayList<Integer>()).size());
     }
 
 }

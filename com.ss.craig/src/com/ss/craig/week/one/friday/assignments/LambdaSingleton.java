@@ -22,9 +22,14 @@ public class LambdaSingleton extends InputUtility {
 
     private LambdaSingleton()
     {
-        OPTIONS = new String[] { "Choose an Assignment:", "0: None - Close program", "1: Lambda Sorting",
-                "2: Lambda Comma Separated String", "3: Lambda Get all strings with 3 letters containing 'a'",
-                "4: Date-time Birthday", "5: Date-time Previous Thursday", "6: Date-time ZoneId ZoneOffset difference",
+        OPTIONS = new String[] { "Choose an Assignment:", 
+                "0: None - Close program", 
+                "1: Lambda Sorting",
+                "2: Lambda Comma Separated String", 
+                "3: Lambda Get all strings with 3 letters containing 'a'",
+                "4: Date-time Birthday", 
+                "5: Date-time Previous Thursday", 
+                "6: Date-time ZoneId ZoneOffset difference",
                 "7: Date-time convert to and from Instant and ZonedDateTime",
                 "8: Date-time Month lengths for given year",
                 "9: Date-time Get all Mondays for a given month of the current year",

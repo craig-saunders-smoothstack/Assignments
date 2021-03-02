@@ -11,13 +11,14 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignment.two.RightDigit;
+import com.ss.craig.week.one.weekend.assignment.GroupedInterface;
+
 
 /**
  * @author Craig Saunders
  *
  */
-public class RightDigitTest extends RightDigit {
+public class RightDigitTest implements GroupedInterface {
     List<Integer> non_negative_test;
 
     /**
@@ -33,7 +34,7 @@ public class RightDigitTest extends RightDigit {
     public void test()
     {
         assertEquals(Arrays.asList(new Integer[] { 1, 2, 3, 6, 8, 6, 8, 1, 0, 0, 7 }),
-                rightDigit.apply(non_negative_test));
+                rightDigit(non_negative_test));
     }
 
 }

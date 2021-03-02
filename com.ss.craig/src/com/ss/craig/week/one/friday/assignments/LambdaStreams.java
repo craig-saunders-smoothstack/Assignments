@@ -44,10 +44,19 @@ public class LambdaStreams extends InputUtility {
      */
     public LambdaStreams()
     {
-        UNSORTED_ARRAY = new String[] { "Trogdor!", "Trogdor!", "", "Trogdor was a man,",
-                "I mean, he was a dragon man,", "Or maybe he was just a dragon.", "But he was still Trogdor!",
-                "Trogdor!", "", "Burninating the countryside.", "Burninating the peasants.",
-                "Burninating all the peoples.", "And their thatched-roof cottages!", "Thatched-roof cottages!" };
+        UNSORTED_ARRAY = new String[] { 
+                "Trogdor!", 
+                "Trogdor!", "", 
+                "Trogdor was a man,",
+                "I mean, he was a dragon man,", 
+                "Or maybe he was just a dragon.", 
+                "But he was still Trogdor!",
+                "Trogdor!", "", 
+                "Burninating the countryside.", 
+                "Burninating the peasants.",
+                "Burninating all the peoples.", 
+                "And their thatched-roof cottages!", 
+                "Thatched-roof cottages!" };
         ARRAY_OF_INTEGERS = new Integer[] { 3, 215, 731, 712, 88354, 14164, 4, 7, 1, 4456, 77, 33, 209, 890, -0, 6,
                 -234, 213, 0, -6, -7 };
         List<String> unsorted_words = new ArrayList<String>();
@@ -55,8 +64,12 @@ public class LambdaStreams extends InputUtility {
             Arrays.asList(s.split(" ")).stream().forEach(str -> unsorted_words.add(str));
         });
         ARRAY_OF_STRINGS = unsorted_words.toArray(new String[unsorted_words.size()]);
-        OPTIONS = new String[] { "Choose your output:", "0: None - Go back to main menu", "1: Unsorted list",
-                "2: Sorted list by length", "3: Sorted list by reverse length", "4: Alphabetically sorted list",
+        OPTIONS = new String[] { "Choose your output:", 
+                "0: None - Go back to main menu", 
+                "1: Unsorted list",
+                "2: Sorted list by length", 
+                "3: Sorted list by reverse length", 
+                "4: Alphabetically sorted list",
                 "5: Sorted list sorting strings starting with 'e' first",
                 "6: Sorted list same as 6 but with helper method" };
     }

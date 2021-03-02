@@ -11,13 +11,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignment.four.NoX;
+import com.ss.craig.week.one.weekend.assignment.GroupedInterface;
 
 /**
  * @author Craig Saunders
  *
  */
-public class NoXTest extends NoX {
+public class NoXTest implements GroupedInterface {
     public List<String> test_list;
 
     /**
@@ -32,7 +32,7 @@ public class NoXTest extends NoX {
     @Test
     public void test()
     {
-        assertEquals(Arrays.asList(new String[] { "a", "bb", "c", "a", "bb", "c", "" }), noX.apply(test_list));
+        assertEquals(Arrays.asList(new String[] { "a", "bb", "c", "a", "bb", "c", "" }), noX(test_list));
     }
 
 }

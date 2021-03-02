@@ -11,13 +11,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignment.one.PerformOperation;
+import com.ss.craig.week.one.weekend.assignment.GroupedInterface;
 
 /**
  * @author Craig Saunders
  *
  */
-public class PerformOperationTest extends PerformOperation {
+public class PerformOperationTest implements GroupedInterface {
     public List<String> sample_input;
     public List<String> sample_output;
 
@@ -59,18 +59,18 @@ public class PerformOperationTest extends PerformOperation {
                         value = split[1];
                         if (key.equals("1"))
                         {
-                            assertEquals(sample_output.get(i), isOdd.apply(Integer.parseInt(value)));
-                            System.out.println(isOdd.apply(Integer.parseInt(value)));
+                            assertEquals(sample_output.get(i), isOdd(Integer.parseInt(value)));
+                            System.out.println(isOdd().apply(Integer.parseInt(value)));
                         }
                         else if (key.equals("2"))
                         {
-                            assertEquals(sample_output.get(i), isPrime.apply(Integer.parseInt(value)));
-                            System.out.println(isPrime.apply(Integer.parseInt(value)));
+                            assertEquals(sample_output.get(i), isPrime(Integer.parseInt(value)));
+                            System.out.println(isPrime().apply(Integer.parseInt(value)));
                         }
                         else if (key.equals("3"))
                         {
-                            assertEquals(sample_output.get(i), isPalindrome.apply(Integer.parseInt(value)));
-                            System.out.println(isPalindrome.apply(Integer.parseInt(value)));
+                            assertEquals(sample_output.get(i), isPalindrome(Integer.parseInt(value)));
+                            System.out.println(isPalindrome().apply(Integer.parseInt(value)));
                         }
                         else
                         {
