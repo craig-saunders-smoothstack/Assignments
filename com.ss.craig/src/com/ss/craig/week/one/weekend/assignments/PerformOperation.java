@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
  * @author Craig Saunders
  *
  */
+
 public interface PerformOperation {
 
     default List<String> noX(List<String> list)
@@ -32,7 +33,7 @@ public interface PerformOperation {
     {
         return isOdd().apply(num);
     }
-    
+
     default String isPrime(Integer num)
     {
         return isPrime().apply(num);
@@ -42,15 +43,15 @@ public interface PerformOperation {
     {
         return isPalindrome().apply(num);
     }
-    
-    default Function<Integer, String> isOdd()
+
+    private Function<Integer, String> isOdd()
     {
-        return(n) -> n % 2 == 0 ? "EVEN" : "ODD";
+        return (n) -> n % 2 == 0 ? "EVEN" : "ODD";
     }
-    
-    default Function<Integer, String> isPrime() 
+
+    private Function<Integer, String> isPrime()
     {
-        return(num) -> {
+        return (num) -> {
             if (num <= 1)
             {
                 return "COMPOSITE";
@@ -65,10 +66,10 @@ public interface PerformOperation {
             return "PRIME";
         };
     }
-    
-    default Function<Integer, String> isPalindrome() 
+
+    private Function<Integer, String> isPalindrome()
     {
-        return(num) -> {
+        return (num) -> {
             int remainder = 0;
             int sum = 0;
             int temp = num;
@@ -80,19 +81,20 @@ public interface PerformOperation {
             }
             return sum == temp ? "PALINDROME" : "NOT PALINDROME";
         };
-    }    
+    }
 
-    default Function<List<String>, List<String>> noX() {
-        return(list) -> list.stream().map(s -> s.replace("x", "")).collect(Collectors.toList());
-    }
-    
-    default Function<List<Integer>, List<Integer>> rightDigit() 
+    private Function<List<String>, List<String>> noX()
     {
-        return(list) -> list.stream().map(i -> i % 10).collect(Collectors.toList());
+        return (list) -> list.stream().map(s -> s.replace("x", "")).collect(Collectors.toList());
     }
-    
-    default Function<List<Integer>, List<Integer>> doubling() 
+
+    private Function<List<Integer>, List<Integer>> rightDigit()
     {
-        return(list) -> list.stream().map(i -> i*2).collect(Collectors.toList());
+        return (list) -> list.stream().map(i -> i % 10).collect(Collectors.toList());
+    }
+
+    private Function<List<Integer>, List<Integer>> doubling()
+    {
+        return (list) -> list.stream().map(i -> i * 2).collect(Collectors.toList());
     }
 }
