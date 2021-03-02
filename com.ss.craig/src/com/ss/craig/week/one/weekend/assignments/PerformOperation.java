@@ -16,85 +16,61 @@ public interface PerformOperation {
 
     default List<String> noX(List<String> list)
     {
-        return noX().apply(list);
+        Function<List<String>, List<String>> noX = l -> l.stream().map(s -> s.replace("x", "")).collect(Collectors.toList());
+        return noX.apply(list);
     }
 
     default List<Integer> rightDigit(List<Integer> list)
     {
-        return rightDigit().apply(list);
+        Function<List<Integer>, List<Integer>> rightDigit = l -> l.stream().map(i -> i % 10).collect(Collectors.toList());
+        return rightDigit.apply(list);        
     }
 
     default List<Integer> doubling(List<Integer> list)
     {
-        return doubling().apply(list);
+        Function<List<Integer>, List<Integer>> doubling = l -> l.stream().map(i -> i * 2).collect(Collectors.toList());
+        return doubling.apply(list);
     }
-
+    
     default String isOdd(Integer num)
     {
-        return isOdd().apply(num);
+        Function<Integer, String> isOdd = n -> n % 2 == 0 ? "EVEN" : "ODD";
+        return isOdd.apply(num);
     }
 
     default String isPrime(Integer num)
     {
-        return isPrime().apply(num);
-    }
-
-    default String isPalindrome(Integer num)
-    {
-        return isPalindrome().apply(num);
-    }
-
-    private Function<Integer, String> isOdd()
-    {
-        return (n) -> n % 2 == 0 ? "EVEN" : "ODD";
-    }
-
-    private Function<Integer, String> isPrime()
-    {
-        return (num) -> {
-            if (num <= 1)
+        Function<Integer, String> isPrime = n -> {
+            if (n <= 1)
             {
                 return "COMPOSITE";
             }
-            for (int i = 2; i < num; i++)
+            for (int i = 2; i < n; i++)
             {
-                if (num % i == 0)
+                if (n % i == 0)
                 {
                     return "COMPOSITE";
                 }
             }
             return "PRIME";
         };
+        return isPrime.apply(num);
     }
 
-    private Function<Integer, String> isPalindrome()
+    default String isPalindrome(Integer num)
     {
-        return (num) -> {
+        Function<Integer, String> isPalindrome = n -> {
             int remainder = 0;
             int sum = 0;
-            int temp = num;
-            while (num > 0)
+            int temp = n;
+            while (n > 0)
             {
-                remainder = num % 10;
+                remainder = n % 10;
                 sum = (sum * 10) + remainder;
-                num = num / 10;
+                n = n / 10;
             }
             return sum == temp ? "PALINDROME" : "NOT PALINDROME";
         };
-    }
-
-    private Function<List<String>, List<String>> noX()
-    {
-        return (list) -> list.stream().map(s -> s.replace("x", "")).collect(Collectors.toList());
-    }
-
-    private Function<List<Integer>, List<Integer>> rightDigit()
-    {
-        return (list) -> list.stream().map(i -> i % 10).collect(Collectors.toList());
-    }
-
-    private Function<List<Integer>, List<Integer>> doubling()
-    {
-        return (list) -> list.stream().map(i -> i * 2).collect(Collectors.toList());
+        return isPalindrome.apply(num);
     }
 }
