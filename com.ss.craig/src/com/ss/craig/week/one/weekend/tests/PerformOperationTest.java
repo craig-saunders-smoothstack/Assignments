@@ -67,17 +67,17 @@ public class PerformOperationTest implements PerformOperation {
                         if (key.equals("1"))
                         {
                             assertEquals(sample_output.get(i), isOdd(Integer.parseInt(value)));
-                            System.out.println(isOdd().apply(Integer.parseInt(value)));
+                            System.out.println(isOdd(Integer.parseInt(value)));
                         }
                         else if (key.equals("2"))
                         {
                             assertEquals(sample_output.get(i), isPrime(Integer.parseInt(value)));
-                            System.out.println(isPrime().apply(Integer.parseInt(value)));
+                            System.out.println(isPrime(Integer.parseInt(value)));
                         }
                         else if (key.equals("3"))
                         {
                             assertEquals(sample_output.get(i), isPalindrome(Integer.parseInt(value)));
-                            System.out.println(isPalindrome().apply(Integer.parseInt(value)));
+                            System.out.println(isPalindrome(Integer.parseInt(value)));
                         }
                         else
                         {

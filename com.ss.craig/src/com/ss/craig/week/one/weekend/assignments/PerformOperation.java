@@ -32,20 +32,20 @@ public interface PerformOperation {
     {
         return isOdd().apply(num);
     }
-
+    
     default String isPrime(Integer num)
     {
-        return isOdd().apply(num);
+        return isPrime().apply(num);
     }
 
     default String isPalindrome(Integer num)
     {
-        return isOdd().apply(num);
+        return isPalindrome().apply(num);
     }
     
     default Function<Integer, String> isOdd()
     {
-        return(num) -> num % 2 == 0 ? "EVEN" : "ODD";
+        return(n) -> n % 2 == 0 ? "EVEN" : "ODD";
     }
     
     default Function<Integer, String> isPrime() 
