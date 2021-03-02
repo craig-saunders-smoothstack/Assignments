@@ -5,25 +5,32 @@ package com.ss.craig.week.one.weekend.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ss.craig.week.one.weekend.assignments.GroupedInterface;
+import com.ss.craig.week.one.weekend.assignments.PerformOperation;
 
 /**
  * @author Craig Saunders
  *
  */
-public class PerformOperationTest implements GroupedInterface {
+public class PerformOperationTest implements PerformOperation {
     public List<String> sample_input;
     public List<String> sample_output;
+    public List<Integer> doubling_list;
+    public List<String> noX_list;
+    List<Integer> non_negative_test;
 
     @Before
     public void setup()
     {
+        non_negative_test = Arrays.asList(new Integer[] { 1, 22, 93, 16, 8, 886, 8, 1, 10, 0, 2347 });
+        noX_list = Arrays.asList(new String[] { "ax", "bb", "cx", "xxax", "xbxbx", "xxcx", "x" });
+        doubling_list = Arrays.asList(new Integer[] { 1, 2, 3, 6, 8, 6, 8, -1 });
         sample_input = Arrays.asList(new String[] { "5", "1 4", "2 5", "3 898", "1 3", "2 12" });
         sample_output = Arrays.asList(new String[] { "EVEN", "PRIME", "PALINDROME", "ODD", "COMPOSITE" });
     }
@@ -88,5 +95,13 @@ public class PerformOperationTest implements GroupedInterface {
                 }
             }
         }
+        // Doubling test
+        assertEquals(Arrays.asList(new Integer[] { 2, 4, 6, 12, 16, 12, 16, -2 }), doubling(doubling_list));
+        assertEquals(0, doubling(new ArrayList<Integer>()).size());
+        // NoX test
+        assertEquals(Arrays.asList(new String[] { "a", "bb", "c", "a", "bb", "c", "" }), noX(noX_list));
+        // RightDigit test
+        assertEquals(Arrays.asList(new Integer[] { 1, 2, 3, 6, 8, 6, 8, 1, 0, 0, 7 }),
+                rightDigit(non_negative_test));
     }
 }
