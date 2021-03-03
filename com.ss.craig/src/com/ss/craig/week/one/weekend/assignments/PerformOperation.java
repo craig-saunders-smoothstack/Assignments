@@ -16,21 +16,22 @@ public interface PerformOperation {
 
     default List<String> noX(List<String> list)
     {
-        Function<List<String>, List<String>> noX = l -> l.stream().map(s -> s.replace("x", "")).collect(Collectors.toList());
         return noX.apply(list);
     }
-
+    final Function<List<String>, List<String>> noX = l -> l.stream().map(s -> s.replace("x", "")).collect(Collectors.toList());
+    
     default List<Integer> rightDigit(List<Integer> list)
-    {
-        Function<List<Integer>, List<Integer>> rightDigit = l -> l.stream().map(i -> i % 10).collect(Collectors.toList());
+    {        
         return rightDigit.apply(list);        
     }
+    final Function<List<Integer>, List<Integer>> rightDigit = l -> l.stream().map(i -> i % 10).collect(Collectors.toList());
 
     default List<Integer> doubling(List<Integer> list)
     {
-        Function<List<Integer>, List<Integer>> doubling = l -> l.stream().map(i -> i * 2).collect(Collectors.toList());
         return doubling.apply(list);
     }
+    
+    final Function<List<Integer>, List<Integer>> doubling = l -> l.stream().map(i -> i * 2).collect(Collectors.toList());
     
     default String isOdd(Integer num)
     {
