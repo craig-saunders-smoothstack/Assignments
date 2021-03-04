@@ -32,6 +32,15 @@ public class LoginServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        response.getWriter().append("This Servlet does not take get requests.");
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
         String username = request.getParameter("SpringMaven-Username");
         String password = request.getParameter("SpringMaven-Password");
         PrintWriter writer = response.getWriter();
@@ -46,15 +55,6 @@ public class LoginServlet extends HttpServlet {
             writer.println("<h3>Please go back and try again.</h3>");
         }
         writer.close();
-    }
-
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        doGet(request, response);
     }
 
 }
