@@ -14,41 +14,47 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final String hardcoded_username = "craig.saunders@smoothstack.com";
-    private static final String hardcoded_password = "java-feb-2021";   
+    private static final long serialVersionUID = 1L;
+    private static final String hardcoded_username = "craig.saunders@smoothstack.com";
+    private static final String hardcoded_password = "java-feb-2021";
+
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoginServlet() {
+    public LoginServlet()
+    {
         super();
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("SpringMaven-Username");
-		String password = request.getParameter("SpringMaven-Password");
-		PrintWriter writer = response.getWriter();
-		if (hardcoded_username.equals(username) &&  hardcoded_password.equals(password))
-		{
-    		writer.println("<h2>Thank you "+username+"</h2>");
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        String username = request.getParameter("SpringMaven-Username");
+        String password = request.getParameter("SpringMaven-Password");
+        PrintWriter writer = response.getWriter();
+        if (hardcoded_username.equals(username) && hardcoded_password.equals(password))
+        {
+            writer.println("<h2>Thank you " + username + "</h2>");
             writer.println("<h3>You are now logged in!</h3>");
-		}
-		else
-		{
+        }
+        else
+        {
             writer.println("<h2>Wrong username or password!</h2>");
-            writer.println("<h3>Please go back and try again.</h3>");		    
-		}
+            writer.println("<h3>Please go back and try again.</h3>");
+        }
         writer.close();
-	}
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        doGet(request, response);
+    }
 
 }
