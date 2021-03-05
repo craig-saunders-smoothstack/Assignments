@@ -2,6 +2,5 @@
 .project
 .settings/
 target/
-!target/SpringMaven/
 *.class
 **/.vscode
