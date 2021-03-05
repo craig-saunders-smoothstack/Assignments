@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="main.css">
+        <script src="books.js"></script>
+    </head>
+    <body onload="displayPage(0)">
+        <div id="main_body" style="background-color: lightgray;">
+            <div id="listing_1" class="listing"></div>
+            <div id="listing_2" class="listing"></div>
+            <div id="listing_3" class="listing"></div>
+            <div id="listing_4" class="listing"></div>
+            <div id="listing_5" class="listing"></div>
+            <div id="listing_6" class="listing"></div>
+            <div id="pagination" class="pagination">
+                <table id="pages" class="pagination_table">
+                    <tr>
+                        <td id="back" onclick="displayPage(-1)"><</td>
+                        <td id="page_1" onclick="displayPage(0)">1</td>
+                        <td id="page_2" onclick="displayPage(1)">2</td>
+                        <td id="page_3" onclick="displayPage(2)">3</td>
+                        <td id="forward" onclick="displayPage(3)">></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+    <footer>
+
+    </footer>
+</html>
