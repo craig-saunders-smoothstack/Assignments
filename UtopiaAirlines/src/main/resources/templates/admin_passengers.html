@@ -1,128 +1,191 @@
 <html>
-<head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<style>
-.node {    
-	padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;	
-    width: 400px;
-}
-
-.column {
-    position: relative;
-    min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
-    float: left;
-    width: 100%;
-    }
-</style>
-</head>
-<body>
-<div id='result' th:style="'display: '+${result_display}" class='node'>
-	<h3 th:text="'Entry ' + ${form_action}"></h3><br />
-	<p th:text="'id: '+${form_result.id}"/>
-	<p th:text="'booking: '+${form_result.booking}"/>
-	<p th:text="'dob '+${form_result.dob}"/>
-	<p th:text="'family_name '+${form_result.familyName}"/>
-	<p th:text="'gender '+${form_result.gender}"/>
-	<p th:text="'given_name: '+${form_result.givenName}"/>
-	<p th:text="'address: '+${form_result.address}"/>
-</div>
-<div id='choices' th:style="'display: '+${choices_display}" class='node'>
-	<h3 th:text=${header_text}></h3><br />
-	<h4><a href='/admin/passengers?action=add'>Add Passenger</a></h4>
-	<h4><a href='/admin/passengers?action=read'>Read Passenger</a></h4>
-	<h4><a href='/admin/passengers?action=update'>Update Passenger</a></h4>
-	<h4><a href='/admin/passengers?action=delete'>Delete Passenger</a></h4>
-	<h4><a href='/admin/'>Back to Admin Menu</a></h4>
-</div>
-<div id='form' th:style="'display: '+${id_form_display}" class='node'>
-	<form method='get' action='/admin/passengers'>
-		<input type='hidden' name='action' th:value='${form_action}'/>
-		<div class="panel panel-primary">
-			<div class="panel-heading" th:text=${header_text}></div>
-			<div class="panel-body">
-				<div class="row">  
-					<div class="column">
-		    			<div class="form-group">
-							<label for='object_id' class='control-label'>Passenger ID:</label>
-							<input type='text' id='object_id' name='object_id' class='form-control' />
-						</div>
-					</div>
-				</div>	
-				<input type="submit" class="btn btn-primary" value="Submit" />
-			</div>
+	<head>
+		<title>Utopia Airlines</title> 
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<style>
+		.node {    
+			padding-right: 15px;
+		    padding-left: 15px;
+		    margin-right: auto;
+		    margin-left: auto;	
+		    width: 400px;
+		}
+		
+		.nodewide {    
+			padding-right: 15px;
+		    padding-left: 15px;
+		    margin-right: auto;
+		    margin-left: auto;	
+		    width: 1600px;	
+		    word-wrap: break-word;	
+		}
+		
+		.column {
+		    position: relative;
+		    min-height: 1px;
+		    padding-right: 15px;
+		    padding-left: 15px;
+		    float: left;
+		    }
+		    
+		.width_td {
+		    width: 160px;
+		    }
+		    
+		.full_width {
+		    width: 100%;
+		    }
+		</style>
+	</head>
+	<body>
+		<div th:if="${result_display} == display" id='result' class='node'>
+			<h3 th:text="'Entry ' + ${form_action}"></h3><br />
+			<p th:text="'id: '+${form_result.id}"/>
+			<p th:text="'booking: '+${form_result.booking}"/>
+			<p th:text="'dob '+${form_result.dob}"/>
+			<p th:text="'family_name '+${form_result.familyName}"/>
+			<p th:text="'gender '+${form_result.gender}"/>
+			<p th:text="'given_name: '+${form_result.givenName}"/>
+			<p th:text="'address: '+${form_result.address}"/>
 		</div>
-	</form>
-</div>
-<div id='form' th:style="'display: '+${form_display}" class='node'>
-	<form method='post' action='/admin/passengers' th:object='${form_result}'>
-		<input type='hidden' th:name='${_csrf.parameterName}' th:value='${_csrf.token}'/>
-		<input type='hidden' name='form_action' th:value='${form_action}'/>
-		<input type='hidden' id='object_id' name='object_id' th:value="${object_id}"/>
-		<div class="panel panel-primary">
-			<div class="panel-heading" th:text=${header_text}></div>
-			<div class="panel-body">
-				<div class="row">  
-					<div class="column">
-		    			<div class="form-group">
-							<label for='booking_id' class='control-label'>Booking ID:</label>
-							<input type='text' id='booking_id' th:field='*{booking.id}' class='form-control' th:value='${form_result.booking.id}' />
-						</div>
-					</div>
-				</div>		
-				<div class="row">            
-					<div class="column">
-		    			<div class="form-group">
-							<label for='dob' class='control-label'>Date of Birth:</label>
-							<input type='text' id='dob' th:field='*{dob}' class='form-control' th:value='${form_result.dob}' />
-						</div>
-					</div>
-				</div>
-				<div class="row">            
-					<div class="column">
-		    			<div class="form-group">	
-							<label for='family_name' class='control-label'>Family Name</label>
-							<input type='text' id='family_name' th:field='*{familyName}' class='form-control' th:value='${form_result.familyName}'/>
-						</div>
-					</div>
-				</div>
-				<div class="row">            
-					<div class="column">
-		    			<div class="form-group">
-							<label for='gender' class='control-label'>Gender:</label><br />
-							<input type='text' id='gender' th:field='*{gender}' class='form-control' th:value='${form_result.gender}'/>
-						</div>
-					</div>
-				</div>
-				<div class="row">            
-					<div class="column">
-		    			<div class="form-group">
-							<label for='given_name' class='control-label'>Given Name:</label>
-							<input type='text' id='given_name' th:field='*{givenName}' class='form-control' th:value='${form_result.givenName}'/>
-						</div>
-					</div>
-				</div>	
-				<div class="row">            
-					<div class="column">
-		    			<div class="form-group">
-							<label for='address' class='control-label'>Address:</label>
-							<input type='text' id='address' th:field='*{address}' class='form-control' th:value='${form_result.address}'/>
-						</div>
-					</div>
-				</div>		
-	        	<input type="submit" class="btn btn-primary" value="Submit" />
-			</div>
+		<div th:if="${choices_display} == display" id='choices' class='node'>
+			<h3 th:text=${header_text}></h3><br />
+			<h4><a href='/admin/passengers?action=add'>Add Passenger</a></h4>
+			<h4><a href='/admin/passengers?action=read'>Read Passenger</a></h4>
+			<h4><a href='/admin/passengers?action=update'>Update Passenger</a></h4>
+			<h4><a href='/admin/passengers?action=delete'>Delete Passenger</a></h4>
+			<h4><a href='/admin/passengers?action=list'>List Passengers</a></h4>
+			<h4><a href='/admin/'>Back to Admin Menu</a></h4>
+		</div>	
+		<div th:if="${not #lists.isEmpty(obj_list)}" id='list' class='nodewide'>
+			<table>
+				<tr>
+					<th class="column width_td">ID</th>
+					<th class="column width_td">BOOKING ID</th>
+					<th class="column width_td">ADDRESS</th>
+					<th class="column width_td">DOB</th>
+					<th class="column width_td">GIVEN_NAME</th>
+					<th class="column width_td">FAMILY NAME</th>
+					<th class="column width_td">GENDER</th>
+				</tr>
+				<tr th:each="obj : ${obj_list}">
+					<td class="column width_td" th:text="${obj.id}"></td>
+					<td class="column width_td" th:text="${obj.booking.id}"></td>
+					<td class="column width_td" th:text="${obj.address}"></td>
+					<td class="column width_td" th:text="${obj.dob}"></td>
+					<td class="column width_td" th:text="${obj.familyName}"></td>
+					<td class="column width_td" th:text="${obj.givenName}"></td>
+					<td class="column width_td" th:text="${obj.gender}"></td>
+				</tr>
+			</table>
 		</div>
-	</form>
-</div>
-</body>
+		<div th:if="${id_form_display} == display" id='form' class='node'>
+			<form method='get' action='/admin/passengers'>
+				<input type='hidden' name='action' th:value='${form_action}'/>
+				<div class="panel panel-primary">
+					<div class="panel-heading" th:text=${header_text}></div>
+					<div class="panel-body">
+						<div class="row">  
+							<div class="column full_width">
+				    			<div class="form-group">
+									<label for='object_id' class='control-label'>Passenger ID:</label>
+									<input type='text' id='object_id' name='object_id' class='form-control' />
+								</div>
+							</div>
+						</div>	
+						<div class="row">            
+							<div class="col-md-6">
+				    			<div class="form-group">			
+			        				<input type="submit" class="btn btn-primary" value="Submit"/> 
+			        			</div>
+			        		</div>
+							<div class="col-md-6" style="float: right;">
+				    			<div class="form-group">
+			        				<input type="button" class="btn btn-primary" value="Go back!" onclick="history.back()">
+			        			</div>
+			        		</div>
+			        	</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div th:if="${form_display} == display" id='form' class='node'>
+			<form method='post' action='/admin/passengers' th:object='${form_result}'>
+				<input type='hidden' th:name='${_csrf.parameterName}' th:value='${_csrf.token}'/>
+				<input type='hidden' name='form_action' th:value='${form_action}'/>
+				<input type='hidden' id='object_id' name='object_id' th:value="${object_id}"/>
+				<div class="panel panel-primary">
+					<div class="panel-heading" th:text=${header_text}></div>
+					<div class="panel-body">
+						<div class="row">  
+							<div class="column full_width">
+				    			<div class="form-group">
+									<label for='booking_id' class='control-label'>Booking ID:</label>
+									<input type='text' id='booking_id' th:field='*{booking.id}' class='form-control' th:value='${form_result.booking.id}' />
+								</div>
+							</div>
+						</div>		
+						<div class="row">            
+							<div class="column full_width">
+				    			<div class="form-group">
+									<label for='dob' class='control-label'>Date of Birth:</label>
+									<input type='text' id='dob' th:field='*{dob}' class='form-control' th:value='${form_result.dob}' />
+								</div>
+							</div>
+						</div>
+						<div class="row">            
+							<div class="column full_width">
+				    			<div class="form-group">	
+									<label for='family_name' class='control-label'>Family Name</label>
+									<input type='text' id='family_name' th:field='*{familyName}' class='form-control' th:value='${form_result.familyName}'/>
+								</div>
+							</div>
+						</div>
+						<div class="row">            
+							<div class="column full_width">
+				    			<div class="form-group">
+									<label for='gender' class='control-label'>Gender:</label><br />
+									<input type='text' id='gender' th:field='*{gender}' class='form-control' th:value='${form_result.gender}'/>
+								</div>
+							</div>
+						</div>
+						<div class="row">            
+							<div class="column full_width">
+				    			<div class="form-group">
+									<label for='given_name' class='control-label'>Given Name:</label>
+									<input type='text' id='given_name' th:field='*{givenName}' class='form-control' th:value='${form_result.givenName}'/>
+								</div>
+							</div>
+						</div>	
+						<div class="row">            
+							<div class="column full_width">
+				    			<div class="form-group">
+									<label for='address' class='control-label'>Address:</label>
+									<input type='text' id='address' th:field='*{address}' class='form-control' th:value='${form_result.address}'/>
+								</div>
+							</div>
+						</div>		
+						<div class="row">            
+							<div class="col-md-6">
+				    			<div class="form-group">			
+			        				<input type="submit" class="btn btn-primary" value="Submit"/> 
+			        			</div>
+			        		</div>
+							<div class="col-md-6" style="float: right;">
+				    			<div class="form-group">
+			        				<input type="button" class="btn btn-primary" value="Go back!" onclick="history.back()">
+			        			</div>
+			        		</div>
+			        	</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</body>
 </html>

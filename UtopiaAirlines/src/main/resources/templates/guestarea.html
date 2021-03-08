@@ -1,6 +1,5 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-	<head> 
+<html>
+	<head>
 	    <title>Utopia Airlines</title> 
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -30,12 +29,8 @@
 	</head>
 	<body>
 		<div class="node">
-		    <h2><p th:text="'Hello, ' + ${name} + '!'" /></h2>
-		    <h3>How would you like to proceed?</h3><br />
-		    <h4><a href="/admin/">Administrator</a></h4>
-		    <h4><a href="/employee/">Employee</a></h4>
-		    <h4><a href="/user/">Traveler</a></h4>
-		    <h4><a href="/guest/">Guest</a></h4>
+			<h2>Hello Guest!</h2>
+			<h4><a href="/">Back to Main Menu</a></h4>
 		</div>
 	</body>
 </html>

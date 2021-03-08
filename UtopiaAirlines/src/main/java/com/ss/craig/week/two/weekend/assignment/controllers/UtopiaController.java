@@ -46,4 +46,10 @@ public class UtopiaController {
     {
         return "employeearea";
     }
+
+    @GetMapping(value = "/guest/", produces = MediaType.TEXT_HTML_VALUE)
+    public String guest()
+    {
+        return "guestarea";
+    }
 }

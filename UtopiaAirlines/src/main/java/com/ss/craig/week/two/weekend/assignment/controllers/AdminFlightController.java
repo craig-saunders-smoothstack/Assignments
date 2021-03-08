@@ -4,6 +4,8 @@
 package com.ss.craig.week.two.weekend.assignment.controllers;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,61 +90,65 @@ public class AdminFlightController {
         Flight empty_object = new Flight();       
         if (action.equals("choose"))
         { 
-            model = addGetAttributes(model, "none", "block", "none", "none",
+            model = addGetAttributes(model, Arrays.asList("choices_display"),
                     VIEW_EDIT_STR, empty_object,
                     "", "");
         }
+        else if (action.equals("list"))
+        {
+            model = addListAttributes(model, VIEW_EDIT_STR, (List<Flight>) object_repo.findAll(), empty_object);
+        }
         else if (action.equals("add"))
         { 
-            model = addGetAttributes(model, "none", "none", "block", "none", CREATE_YOUR_STR, empty_object, "add", "");
+            model = addGetAttributes(model, Arrays.asList("form_display"), CREATE_YOUR_STR, empty_object, "add", "");
         }
         else if (action.equals("delete_id"))
         {
             int id = parseIntSafe(object_id);
             if (id > 0 && object_repo.existsById(id))
             {
-                model = addGetAttributes(model, "none", "none", "block", "none", "Delete your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "delete", object_id);
+                model = addGetAttributes(model, Arrays.asList("form_display"), "Delete your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "delete", object_id);
             }
             else
             {
-                model = addGetAttributes(model, "none", "block", "none", "none", "Delete "+FAILED_STR+" id", empty_object, "choose", "");
+                model = addGetAttributes(model, Arrays.asList("choices_display"), "Delete "+FAILED_STR+" id", empty_object, "choose", "");
             }
         }
         else if (action.equals("delete"))
         {
-            model = addGetAttributes(model, "none", "none", "none", "block", CHOOSE_OBJ_STR+"delete:", empty_object, "delete_id", "");
+            model = addGetAttributes(model, Arrays.asList("id_form_display"), CHOOSE_OBJ_STR+"delete:", empty_object, "delete_id", "");
         }
         else if (action.equals("update_id"))
         {
             int id = parseIntSafe(object_id);
             if (id > 0 && object_repo.existsById(id))
             {
-                model = addGetAttributes(model, "none", "none", "block", "none", "Update your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "update", object_id);
+                model = addGetAttributes(model, Arrays.asList("form_display"), "Update your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "update", object_id);
             }
             else
             {
-                model = addGetAttributes(model, "none", "block", "none", "none", "Update "+FAILED_STR+" id", empty_object, "choose", "");
+                model = addGetAttributes(model, Arrays.asList("choices_display"), "Update "+FAILED_STR+" id", empty_object, "choose", "");
             }
         }
         else if (action.equals("update"))
         {
-            model = addGetAttributes(model, "none", "none", "none", "block", CHOOSE_OBJ_STR+"update:", empty_object, "update_id", "");
+            model = addGetAttributes(model, Arrays.asList("id_form_display"), CHOOSE_OBJ_STR+"update:", empty_object, "update_id", "");
         }
         else if (action.equals("read_id"))
         {
             int id = parseIntSafe(object_id);
             if (id > 0 && object_repo.existsById(id))
             {
-                model = addGetAttributes(model, "none", "none", "block", "none", "Read your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "read", object_id);
+                model = addGetAttributes(model, Arrays.asList("form_display"), "Read your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "read", object_id);
             }
             else
             {
-                model = addGetAttributes(model, "none", "block", "none", "none", "Read "+FAILED_STR+" id", empty_object, "choose", "");
+                model = addGetAttributes(model, Arrays.asList("choices_display"), "Read "+FAILED_STR+" id", empty_object, "choose", "");
             }
         }
         else if (action.equals("read"))
         {
-            model = addGetAttributes(model, "none", "none", "none", "block",
+            model = addGetAttributes(model, Arrays.asList("id_form_display"),
                     CHOOSE_OBJ_STR+"read:", empty_object, "read_id", "");
         }
         return TEMPLATE_STR;
@@ -161,8 +167,19 @@ public class AdminFlightController {
         } 
         return id;
     }
+
+    private Model addListAttributes(Model model, String header, List<Flight> all, Flight obj)
+    {        
+        model.addAttribute("choices_display", "display");
+        model.addAttribute("header_text", header);
+        model.addAttribute("form_result", obj);
+        model.addAttribute("form_action", "list_all");
+        model.addAttribute("obj_list", all);
+        model.addAttribute("object_id", "");
+        return model;
+    }
     
-    private Model addGetAttributes(Model model, String result_display, String choices_display, String form_display, String id_form_display,
+    private Model addGetAttributes(Model model, List<String> displays,
             String header, Flight form_result, String form_action, String object_id)
     {
         if (form_result.getAirplane() == null)
@@ -173,10 +190,8 @@ public class AdminFlightController {
         {
             form_result.setRoute(new Route());
         }
-        model.addAttribute("result_display", result_display);
-        model.addAttribute("choices_display", choices_display);
-        model.addAttribute("form_display", form_display);
-        model.addAttribute("id_form_display", id_form_display);
+
+        displays.stream().forEach(s -> model.addAttribute(s,"display"));
         model.addAttribute("header_text", header);
         model.addAttribute("form_result", form_result);
         model.addAttribute("form_action", form_action);
@@ -211,12 +226,12 @@ public class AdminFlightController {
             {
                 result = object_repo.save(form_result);
             }
-            model = addGetAttributes(model, "block", "block", "none", "none", 
+            model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
                     VIEW_EDIT_STR, result, verb, Integer.toString(result.getId()));
         }
         else
         {                
-            model = addGetAttributes(model, "block", "block", "none", "none", 
+            model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
                     VIEW_EDIT_STR, form_result, "Not "+verb, object_id);
         }
         return model;
