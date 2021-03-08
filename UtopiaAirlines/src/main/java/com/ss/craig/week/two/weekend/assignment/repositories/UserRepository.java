@@ -15,4 +15,7 @@ import com.ss.craig.week.two.weekend.assignment.jpaentities.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     public User findByUsername(String username);
+    public User findById(Integer id);
+    public boolean existsById(Integer id);
+    public boolean existsByUsername(String username);
 }

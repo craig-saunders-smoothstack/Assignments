@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,7 +25,7 @@ public class User implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = 1594864881167177918L;
+    private static final long serialVersionUID = -8478658090013687753L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -42,12 +44,13 @@ public class User implements Serializable {
     private String password;
     @Column(nullable=false, length=16)
     private String phone;
-    @Column(name="role_id", nullable=false, precision=10)
-    private int roleId;
     @Column(unique=true, nullable=false, length=64)
     private String username;
     @OneToMany(mappedBy="user")
     private Set<BookingAgent> bookingAgent;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="role_id", nullable=false)
+    private UserRole userRole;
 
     /** Default constructor. */
     public User() {
@@ -163,24 +166,6 @@ public class User implements Serializable {
     }
 
     /**
-     * Access method for roleId.
-     *
-     * @return the current value of roleId
-     */
-    public int getRoleId() {
-        return roleId;
-    }
-
-    /**
-     * Setter method for roleId.
-     *
-     * @param aRoleId the new value for roleId
-     */
-    public void setRoleId(int aRoleId) {
-        roleId = aRoleId;
-    }
-
-    /**
      * Access method for username.
      *
      * @return the current value of username
@@ -214,6 +199,24 @@ public class User implements Serializable {
      */
     public void setBookingAgent(Set<BookingAgent> aBookingAgent) {
         bookingAgent = aBookingAgent;
+    }
+
+    /**
+     * Access method for userRole.
+     *
+     * @return the current value of userRole
+     */
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    /**
+     * Setter method for userRole.
+     *
+     * @param aUserRole the new value for userRole
+     */
+    public void setUserRole(UserRole aUserRole) {
+        userRole = aUserRole;
     }
 
     /**

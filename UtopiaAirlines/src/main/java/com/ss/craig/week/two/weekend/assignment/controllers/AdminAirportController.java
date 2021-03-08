@@ -144,7 +144,7 @@ public class AdminAirportController {
     private Model addPostAttributes(Model model, Airport form_result, String object_id, String verb)
     {
         form_result.setTimeZone(time_zone_repo.findById(form_result.getTimeZone().getId()));
-        if (!(form_result.getTimeZone() == null) && object_id !="" && object_id.length() == 3)
+        if (form_result != null && form_result.getTimeZone() != null && object_id !="" && object_id.length() == 3)
         {
             Airport result = form_result;
             if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))

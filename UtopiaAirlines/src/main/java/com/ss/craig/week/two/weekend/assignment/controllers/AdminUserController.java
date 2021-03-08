@@ -3,12 +3,10 @@
  */
 package com.ss.craig.week.two.weekend.assignment.controllers;
 
-import java.time.LocalDateTime;
-
 import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.ss.craig.week.two.weekend.assignment.jpaentities.Airplane;
-import com.ss.craig.week.two.weekend.assignment.jpaentities.Flight;
-import com.ss.craig.week.two.weekend.assignment.jpaentities.Route;
-import com.ss.craig.week.two.weekend.assignment.repositories.AirplaneRepository;
-import com.ss.craig.week.two.weekend.assignment.repositories.FlightRepository;
-import com.ss.craig.week.two.weekend.assignment.repositories.RouteRepository;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.User;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.UserRole;
+import com.ss.craig.week.two.weekend.assignment.repositories.UserRepository;
 
 /**
  * @author Craig Saunders
@@ -30,40 +25,47 @@ import com.ss.craig.week.two.weekend.assignment.repositories.RouteRepository;
  */
 @Controller
 @RequestMapping(path = "/admin/", produces = MediaType.TEXT_HTML_VALUE)
-public class AdminFlightController {
+public class AdminUserController {
     private final String VIEW_EDIT_STR = "What would you like to view/edit?";
-    private final String CREATE_YOUR_STR = "Create your flight:";
-    private final String CHOOSE_OBJ_STR = "Choose the flight to ";
+    private final String CREATE_YOUR_STR = "Create your user:";
+    private final String CHOOSE_OBJ_STR = "Choose the user to ";
     private final String FAILED_STR = " failed: not a valid ";
-    private final String OBJECT_STR = "Flight";
-    private final String TEMPLATE_STR = "admin_flights";
-    private final String MAPPING_STR = "/flights";
+    private final String OBJECT_STR = "User";
+    private final String TEMPLATE_STR = "admin_users";
+    private final String MAPPING_STR = "/users";
     
     @Autowired
-    private FlightRepository object_repo;
+    private UserRepository object_repo;
+    
     @Autowired
-    private AirplaneRepository airplane_repo;
-    @Autowired
-    private RouteRepository route_repo;
+    private PasswordEncoder passwordEncoder;
     
     @PostMapping(value = MAPPING_STR)
-    public String flightSubmit(@ModelAttribute Flight form_result, 
+    public String userSubmit(@ModelAttribute User form_result, 
             @RequestParam(name = "form_action", defaultValue = "update")String form_action, 
-            @RequestParam(name = "object_id", defaultValue = "")String object_id, 
-            @RequestParam(name = "departure_time", defaultValue = "1900-01-01T00:00") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime departure_time,
+            @RequestParam(name = "object_id", defaultValue = "")String object_id,
             Model model) throws PropertyValueException
     {
         if (form_action.equals("read"))
         {
-            addPostAttributes(model, form_result, departure_time, object_id, "Read");
+            addPostAttributes(model, form_result, object_id, "Read");
         }
         else if (form_action.equals("update"))
         {
-            addPostAttributes(model, form_result, departure_time, object_id, "Updated");
+            if (!form_result.getPassword().equals("") && !passwordEncoder.matches(form_result.getPassword(), object_repo.findByUsername(form_result.getUsername()).getPassword()))
+            {
+                form_result.setPassword(passwordEncoder.encode(form_result.getPassword()));
+            }
+            else
+            {
+                form_result.setPassword(object_repo.findByUsername(form_result.getUsername()).getPassword());
+            }
+            addPostAttributes(model, form_result, object_id, "Updated");
         }
         else if (form_action.equals("add"))
         {
-            addPostAttributes(model, form_result, departure_time, object_id, "Created");
+            form_result.setPassword(passwordEncoder.encode(form_result.getPassword()));
+            addPostAttributes(model, form_result, object_id, "Created");
         }
         else if (form_action.equals("delete"))
         {
@@ -74,18 +76,18 @@ public class AdminFlightController {
             catch (Exception e)
             {
             }
-            model = addPostAttributes(model, form_result, departure_time, object_id, "Deleted");
+            model = addPostAttributes(model, form_result, object_id, "Deleted");
         }
         return TEMPLATE_STR;
     }
     
     @GetMapping(value = MAPPING_STR)
-    public String admin_flights(
+    public String adminUsers(
             @RequestParam(name = "action", defaultValue = "choose") String action,
             @RequestParam(name = "object_id", defaultValue = "") String object_id,
             Model model)
     {
-        Flight empty_object = new Flight();       
+        User empty_object = new User();       
         if (action.equals("choose"))
         { 
             model = addGetAttributes(model, "none", "block", "none", "none",
@@ -98,10 +100,9 @@ public class AdminFlightController {
         }
         else if (action.equals("delete_id"))
         {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
+            if (object_repo.existsByUsername(object_id))
             {
-                model = addGetAttributes(model, "none", "none", "block", "none", "Delete your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "delete", object_id);
+                model = addGetAttributes(model, "none", "none", "block", "none", "Delete your "+OBJECT_STR.toLowerCase()+":", object_repo.findByUsername(object_id), "delete", Integer.toString(object_repo.findByUsername(object_id).getId()));
             }
             else
             {
@@ -114,10 +115,9 @@ public class AdminFlightController {
         }
         else if (action.equals("update_id"))
         {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
+            if (object_repo.existsByUsername(object_id))
             {
-                model = addGetAttributes(model, "none", "none", "block", "none", "Update your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "update", object_id);
+                model = addGetAttributes(model, "none", "none", "block", "none", "Update your "+OBJECT_STR.toLowerCase()+":", object_repo.findByUsername(object_id), "update", Integer.toString(object_repo.findByUsername(object_id).getId()));
             }
             else
             {
@@ -130,10 +130,9 @@ public class AdminFlightController {
         }
         else if (action.equals("read_id"))
         {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
+            if (object_repo.existsByUsername(object_id))
             {
-                model = addGetAttributes(model, "none", "none", "block", "none", "Read your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "read", object_id);
+                model = addGetAttributes(model, "none", "none", "block", "none", "Read your "+OBJECT_STR.toLowerCase()+":", object_repo.findByUsername(object_id), "read", Integer.toString(object_repo.findByUsername(object_id).getId()));
             }
             else
             {
@@ -163,15 +162,11 @@ public class AdminFlightController {
     }
     
     private Model addGetAttributes(Model model, String result_display, String choices_display, String form_display, String id_form_display,
-            String header, Flight form_result, String form_action, String object_id)
+            String header, User form_result, String form_action, String object_id)
     {
-        if (form_result.getAirplane() == null)
+        if(form_result.getUserRole() == null)
         {
-            form_result.setAirplane(new Airplane());
-        }
-        if (form_result.getRoute() == null)
-        {
-            form_result.setRoute(new Route());
+            form_result.setUserRole(new UserRole());
         }
         model.addAttribute("result_display", result_display);
         model.addAttribute("choices_display", choices_display);
@@ -184,14 +179,11 @@ public class AdminFlightController {
         return model;        
     }
     
-    private Model addPostAttributes(Model model, Flight form_result, LocalDateTime departure_time, String object_id, String verb)
+    private Model addPostAttributes(Model model, User form_result, String object_id, String verb)
     {
-        form_result.setAirplane(airplane_repo.findById(form_result.getAirplane().getId()));
-        form_result.setRoute(route_repo.findById(form_result.getRoute().getId()));
-        form_result.setDepartureTime(departure_time);
-        if (form_result != null && form_result.getAirplane() != null && form_result.getRoute() != null)
+        if (form_result != null && form_result.getUserRole() != null)
         {
-            Flight result = form_result;
+            User result = form_result;
             if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))
             {
                 try
@@ -217,9 +209,8 @@ public class AdminFlightController {
         else
         {                
             model = addGetAttributes(model, "block", "block", "none", "none", 
-                    VIEW_EDIT_STR, form_result, "Not "+verb, object_id);
+                    VIEW_EDIT_STR, new User(), "Not "+verb, object_id);
         }
         return model;
     }
-    
 }

@@ -5,12 +5,14 @@ package com.ss.craig.week.two.weekend.assignment.jpaentities;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity(name="user_role")
 public class UserRole implements Serializable {
@@ -18,7 +20,7 @@ public class UserRole implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = 961339759397071612L;
+    private static final long serialVersionUID = -2274089321098755437L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -29,6 +31,8 @@ public class UserRole implements Serializable {
     private int id;
     @Column(nullable=false, length=128)
     private String name;
+    @OneToMany(mappedBy="userRole")
+    private Set<User> user;
 
     /** Default constructor. */
     public UserRole() {
@@ -69,6 +73,24 @@ public class UserRole implements Serializable {
      */
     public void setName(String aName) {
         name = aName;
+    }
+
+    /**
+     * Access method for user.
+     *
+     * @return the current value of user
+     */
+    public Set<User> getUser() {
+        return user;
+    }
+
+    /**
+     * Setter method for user.
+     *
+     * @param aUser the new value for user
+     */
+    public void setUser(Set<User> aUser) {
+        user = aUser;
     }
 
     /**

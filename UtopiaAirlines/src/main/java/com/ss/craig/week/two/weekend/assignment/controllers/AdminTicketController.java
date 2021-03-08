@@ -15,4 +15,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(path = "/admin/", produces = MediaType.TEXT_HTML_VALUE)
 public class AdminTicketController {
 
+    
 }

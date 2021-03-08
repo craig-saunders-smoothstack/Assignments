@@ -1,0 +1,137 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<style>
+.node {    
+	padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;	
+    width: 400px;
+}
+
+.column {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    float: left;
+    width: 100%;
+    }
+</style>
+</head>
+<body>
+<div id='result' th:style="'display: '+${result_display}" class='node'>
+	<h3 th:text="'Entry ' + ${form_action}"></h3><br />
+	<p th:text="'user_role '+${form_result.userRole}"/>
+	<p th:text="'id: '+${form_result.id}"/>
+	<p th:text="'email: '+${form_result.email}"/>
+	<p th:text="'phone '+${form_result.phone}"/>
+	<p th:text="'given_name: '+${form_result.givenName}"/>
+	<p th:text="'family_name '+${form_result.familyName}"/>
+	<p th:text="'username: '+${form_result.username}"/>
+	<p th:text="'password: *********'"/>
+</div>
+<div id='choices' th:style="'display: '+${choices_display}" class='node'>
+	<h3 th:text=${header_text}></h3><br />
+	<h4><a href='/admin/users?action=add'>Add User</a></h4>
+	<h4><a href='/admin/users?action=read'>Read User</a></h4>
+	<h4><a href='/admin/users?action=update'>Update User</a></h4>
+	<h4><a href='/admin/users?action=delete'>Delete User</a></h4>
+	<h4><a href='/admin/'>Back to Admin Menu</a></h4>
+</div>
+<div id='form' th:style="'display: '+${id_form_display}" class='node'>
+	<form method='get' action='/admin/users'>
+		<input type='hidden' name='action' th:value='${form_action}'/>
+		<div class="panel panel-primary">
+			<div class="panel-heading" th:text=${header_text}></div>
+			<div class="panel-body">
+				<div class="row">  
+					<div class="column">
+		    			<div class="form-group">
+							<label for='object_id' class='control-label'>Username:</label>
+							<input type='text' id='object_id' name='object_id' class='form-control' />
+						</div>
+					</div>
+				</div>	
+				<input type="submit" class="btn btn-primary" value="Submit" />
+			</div>
+		</div>
+	</form>
+</div>
+<div id='form' th:style="'display: '+${form_display}" class='node'>
+	<form method='post' action='/admin/users' th:object='${form_result}'>
+		<input type='hidden' th:name='${_csrf.parameterName}' th:value='${_csrf.token}'/>
+		<input type='hidden' name='form_action' th:value='${form_action}'/>
+		<input type='hidden' id='object_id' name='object_id' th:value="${object_id}"/>
+		<div class="panel panel-primary">
+			<div class="panel-heading" th:text=${header_text}></div>
+			<div class="panel-body">
+				<div class="row">  
+					<div class="column">
+		    			<div class="form-group">
+							<label for='role_id' class='control-label'>Role ID:</label>
+							<input type='text' id='role_id' th:field='*{userRole.id}' class='form-control' th:value='${form_result.userRole.id}' />
+						</div>
+					</div>
+				</div>		
+				<div class="row">            
+					<div class="column">
+		    			<div class="form-group">
+							<label for='email' class='control-label'>Email:</label>
+							<input type='text' id='email' th:field='*{email}' class='form-control' th:value='${form_result.email}' />
+						</div>
+					</div>
+				</div>
+				<div class="row">            
+					<div class="column">
+		    			<div class="form-group">
+							<label for='phone' class='control-label'>Phone:</label><br />
+							<input type='text' id='phone' th:field='*{phone}' class='form-control' th:value='${form_result.phone}'/>
+						</div>
+					</div>
+				</div>
+				<div class="row">            
+					<div class="column">
+		    			<div class="form-group">
+							<label for='given_name' class='control-label'>Given Name:</label>
+							<input type='text' id='given_name' th:field='*{givenName}' class='form-control' th:value='${form_result.givenName}'/>
+						</div>
+					</div>
+				</div>	
+				<div class="row">            
+					<div class="column">
+		    			<div class="form-group">	
+							<label for='family_name' class='control-label'>Family Name</label>
+							<input type='text' id='family_name' th:field='*{familyName}' class='form-control' th:value='${form_result.familyName}'/>
+						</div>
+					</div>
+				</div>
+				<div class="row">            
+					<div class="column">
+		    			<div class="form-group">
+							<label for='username' class='control-label'>Username:</label>
+							<input type='text' id='username' th:field='*{username}' class='form-control' th:value='${form_result.username}'/>
+						</div>
+					</div>
+				</div>	
+				<div class="row">            
+					<div class="column">
+		    			<div class="form-group">
+							<label for='password' class='control-label'>Password:</label>
+							<input type='password' id='password' th:field='*{password}' class='form-control' th:value='${form_result.password}'/>
+						</div>
+					</div>
+				</div>	
+	        	<input type="submit" class="btn btn-primary" value="Submit" />
+			</div>
+		</div>
+	</form>
+</div>
+</body>
+</html>

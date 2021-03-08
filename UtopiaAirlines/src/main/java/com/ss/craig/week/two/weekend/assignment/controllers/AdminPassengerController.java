@@ -170,7 +170,7 @@ public class AdminPassengerController {
     private Model addPostAttributes(Model model, Passenger form_result, String object_id, String verb)
     {
         form_result.setBooking(booking_repo.findById(form_result.getBooking().getId()));
-        if (!(form_result.getBooking() == null))
+        if (form_result != null && form_result.getBooking() != null)
         {
             Passenger result = form_result;
             if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))
