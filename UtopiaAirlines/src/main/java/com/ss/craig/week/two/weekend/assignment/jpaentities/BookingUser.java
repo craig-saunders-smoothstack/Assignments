@@ -5,6 +5,7 @@ package com.ss.craig.week.two.weekend.assignment.jpaentities;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity(name="booking_user")
 public class BookingUser implements Serializable {
@@ -20,7 +22,7 @@ public class BookingUser implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = 976203397936499145L;
+    private static final long serialVersionUID = -5688288860418646381L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -34,6 +36,8 @@ public class BookingUser implements Serializable {
     @ManyToOne(optional=false)
     @JoinColumn(name="booking_id", nullable=false)
     private Booking booking;
+    @OneToMany(mappedBy="bookingUser")
+    private Set<Ticket> ticket;
 
     /** Default constructor. */
     public BookingUser() {
@@ -92,6 +96,24 @@ public class BookingUser implements Serializable {
      */
     public void setBooking(Booking aBooking) {
         booking = aBooking;
+    }
+
+    /**
+     * Access method for ticket.
+     *
+     * @return the current value of ticket
+     */
+    public Set<Ticket> getTicket() {
+        return ticket;
+    }
+
+    /**
+     * Setter method for ticket.
+     *
+     * @param aTicket the new value for ticket
+     */
+    public void setTicket(Set<Ticket> aTicket) {
+        ticket = aTicket;
     }
 
     /**

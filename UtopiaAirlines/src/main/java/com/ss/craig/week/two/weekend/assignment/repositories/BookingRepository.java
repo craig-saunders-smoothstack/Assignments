@@ -15,4 +15,5 @@ import com.ss.craig.week.two.weekend.assignment.jpaentities.Booking;
 @Repository
 public interface BookingRepository extends CrudRepository<Booking, Long> {
     public Booking findById(Integer id);
+    public boolean existsById(Integer id);
 }

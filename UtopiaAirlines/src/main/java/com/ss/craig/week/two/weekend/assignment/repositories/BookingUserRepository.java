@@ -13,4 +13,6 @@ import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingUser;
  *
  */
 @Repository
-public interface BookingUserRepository extends CrudRepository<BookingUser, Long> {}
+public interface BookingUserRepository extends CrudRepository<BookingUser, Long> {
+    public boolean existsById(Integer id);
+}

@@ -5,22 +5,22 @@ package com.ss.craig.week.two.weekend.assignment.jpaentities;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-@Entity(name="booking")
-public class Booking implements Serializable {
+@Entity(name="ticket")
+public class Ticket implements Serializable {
 
     /**
      * 
      */
-    private static final long serialVersionUID = -5070581340833507795L;
+    private static final long serialVersionUID = -2676641747886742675L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -29,27 +29,30 @@ public class Booking implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(unique=true, nullable=false, precision=10)
     private int id;
-    @Column(name="is_active", nullable=false, precision=3)
-    private short isActive;
-    @Column(name="confirmation_code", nullable=false, length=64)
-    private String confirmationCode;
-    @OneToMany(mappedBy="booking")
-    private Set<FlightBookings> flightBookings;
-    @OneToMany(mappedBy="booking")
-    private Set<BookingGuest> bookingGuest;
-    @OneToMany(mappedBy="booking")
-    private Set<BookingAgent> bookingAgent;
-    @OneToMany(mappedBy="booking")
-    private Set<Passenger> passenger;
-    @OneToMany(mappedBy="booking")
-    private Set<BookingPayment> bookingPayment;
-    @OneToMany(mappedBy="booking")
-    private Set<BookingUser> bookingUser;
-    @OneToMany(mappedBy="booking")
-    private Set<Ticket> ticket;
+    @ManyToOne
+    @JoinColumn(name="booking_agent_id")
+    private BookingAgent bookingAgent;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="booking_id", nullable=false)
+    private Booking booking;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="flight_bookings_id", nullable=false)
+    private FlightBookings flightBookings;
+    @ManyToOne
+    @JoinColumn(name="booking_guest_id")
+    private BookingGuest bookingGuest;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="passenger_id", nullable=false)
+    private Passenger passenger;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="booking_payment_id", nullable=false)
+    private BookingPayment bookingPayment;
+    @ManyToOne
+    @JoinColumn(name="booking_user_id")
+    private BookingUser bookingUser;
 
     /** Default constructor. */
-    public Booking() {
+    public Ticket() {
         super();
     }
 
@@ -72,83 +75,11 @@ public class Booking implements Serializable {
     }
 
     /**
-     * Access method for isActive.
-     *
-     * @return the current value of isActive
-     */
-    public short getIsActive() {
-        return isActive;
-    }
-
-    /**
-     * Setter method for isActive.
-     *
-     * @param aIsActive the new value for isActive
-     */
-    public void setIsActive(short aIsActive) {
-        isActive = aIsActive;
-    }
-
-    /**
-     * Access method for confirmationCode.
-     *
-     * @return the current value of confirmationCode
-     */
-    public String getConfirmationCode() {
-        return confirmationCode;
-    }
-
-    /**
-     * Setter method for confirmationCode.
-     *
-     * @param aConfirmationCode the new value for confirmationCode
-     */
-    public void setConfirmationCode(String aConfirmationCode) {
-        confirmationCode = aConfirmationCode;
-    }
-
-    /**
-     * Access method for flightBookings.
-     *
-     * @return the current value of flightBookings
-     */
-    public Set<FlightBookings> getFlightBookings() {
-        return flightBookings;
-    }
-
-    /**
-     * Setter method for flightBookings.
-     *
-     * @param aFlightBookings the new value for flightBookings
-     */
-    public void setFlightBookings(Set<FlightBookings> aFlightBookings) {
-        flightBookings = aFlightBookings;
-    }
-
-    /**
-     * Access method for bookingGuest.
-     *
-     * @return the current value of bookingGuest
-     */
-    public Set<BookingGuest> getBookingGuest() {
-        return bookingGuest;
-    }
-
-    /**
-     * Setter method for bookingGuest.
-     *
-     * @param aBookingGuest the new value for bookingGuest
-     */
-    public void setBookingGuest(Set<BookingGuest> aBookingGuest) {
-        bookingGuest = aBookingGuest;
-    }
-
-    /**
      * Access method for bookingAgent.
      *
      * @return the current value of bookingAgent
      */
-    public Set<BookingAgent> getBookingAgent() {
+    public BookingAgent getBookingAgent() {
         return bookingAgent;
     }
 
@@ -157,8 +88,62 @@ public class Booking implements Serializable {
      *
      * @param aBookingAgent the new value for bookingAgent
      */
-    public void setBookingAgent(Set<BookingAgent> aBookingAgent) {
+    public void setBookingAgent(BookingAgent aBookingAgent) {
         bookingAgent = aBookingAgent;
+    }
+
+    /**
+     * Access method for booking.
+     *
+     * @return the current value of booking
+     */
+    public Booking getBooking() {
+        return booking;
+    }
+
+    /**
+     * Setter method for booking.
+     *
+     * @param aBooking the new value for booking
+     */
+    public void setBooking(Booking aBooking) {
+        booking = aBooking;
+    }
+
+    /**
+     * Access method for flightBookings.
+     *
+     * @return the current value of flightBookings
+     */
+    public FlightBookings getFlightBookings() {
+        return flightBookings;
+    }
+
+    /**
+     * Setter method for flightBookings.
+     *
+     * @param aFlightBookings the new value for flightBookings
+     */
+    public void setFlightBookings(FlightBookings aFlightBookings) {
+        flightBookings = aFlightBookings;
+    }
+
+    /**
+     * Access method for bookingGuest.
+     *
+     * @return the current value of bookingGuest
+     */
+    public BookingGuest getBookingGuest() {
+        return bookingGuest;
+    }
+
+    /**
+     * Setter method for bookingGuest.
+     *
+     * @param aBookingGuest the new value for bookingGuest
+     */
+    public void setBookingGuest(BookingGuest aBookingGuest) {
+        bookingGuest = aBookingGuest;
     }
 
     /**
@@ -166,7 +151,7 @@ public class Booking implements Serializable {
      *
      * @return the current value of passenger
      */
-    public Set<Passenger> getPassenger() {
+    public Passenger getPassenger() {
         return passenger;
     }
 
@@ -175,7 +160,7 @@ public class Booking implements Serializable {
      *
      * @param aPassenger the new value for passenger
      */
-    public void setPassenger(Set<Passenger> aPassenger) {
+    public void setPassenger(Passenger aPassenger) {
         passenger = aPassenger;
     }
 
@@ -184,7 +169,7 @@ public class Booking implements Serializable {
      *
      * @return the current value of bookingPayment
      */
-    public Set<BookingPayment> getBookingPayment() {
+    public BookingPayment getBookingPayment() {
         return bookingPayment;
     }
 
@@ -193,7 +178,7 @@ public class Booking implements Serializable {
      *
      * @param aBookingPayment the new value for bookingPayment
      */
-    public void setBookingPayment(Set<BookingPayment> aBookingPayment) {
+    public void setBookingPayment(BookingPayment aBookingPayment) {
         bookingPayment = aBookingPayment;
     }
 
@@ -202,7 +187,7 @@ public class Booking implements Serializable {
      *
      * @return the current value of bookingUser
      */
-    public Set<BookingUser> getBookingUser() {
+    public BookingUser getBookingUser() {
         return bookingUser;
     }
 
@@ -211,42 +196,24 @@ public class Booking implements Serializable {
      *
      * @param aBookingUser the new value for bookingUser
      */
-    public void setBookingUser(Set<BookingUser> aBookingUser) {
+    public void setBookingUser(BookingUser aBookingUser) {
         bookingUser = aBookingUser;
     }
 
     /**
-     * Access method for ticket.
-     *
-     * @return the current value of ticket
-     */
-    public Set<Ticket> getTicket() {
-        return ticket;
-    }
-
-    /**
-     * Setter method for ticket.
-     *
-     * @param aTicket the new value for ticket
-     */
-    public void setTicket(Set<Ticket> aTicket) {
-        ticket = aTicket;
-    }
-
-    /**
-     * Compares the key for this instance with another Booking.
+     * Compares the key for this instance with another Ticket.
      *
      * @param other The object to compare to
-     * @return True if other object is instance of class Booking and the key objects are equal
+     * @return True if other object is instance of class Ticket and the key objects are equal
      */
     private boolean equalKeys(Object other) {
         if (this==other) {
             return true;
         }
-        if (!(other instanceof Booking)) {
+        if (!(other instanceof Ticket)) {
             return false;
         }
-        Booking that = (Booking) other;
+        Ticket that = (Ticket) other;
         if (this.getId() != that.getId()) {
             return false;
         }
@@ -254,15 +221,15 @@ public class Booking implements Serializable {
     }
 
     /**
-     * Compares this instance with another Booking.
+     * Compares this instance with another Ticket.
      *
      * @param other The object to compare to
      * @return True if the objects are the same
      */
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Booking)) return false;
-        return this.equalKeys(other) && ((Booking)other).equalKeys(this);
+        if (!(other instanceof Ticket)) return false;
+        return this.equalKeys(other) && ((Ticket)other).equalKeys(this);
     }
 
     /**
@@ -286,7 +253,7 @@ public class Booking implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("[Booking |");
+        StringBuffer sb = new StringBuffer("[Ticket |");
         sb.append(" id=").append(getId());
         sb.append("]");
         return sb.toString();

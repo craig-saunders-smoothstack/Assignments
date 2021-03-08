@@ -13,4 +13,6 @@ import com.ss.craig.week.two.weekend.assignment.jpaentities.FlightBookings;
  *
  */
 @Repository
-public interface FlightBookingsRepository extends CrudRepository<FlightBookings, Long> {}
+public interface FlightBookingsRepository extends CrudRepository<FlightBookings, Long> {
+    public boolean existsById(Integer id);
+}

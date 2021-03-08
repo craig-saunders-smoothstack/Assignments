@@ -13,4 +13,6 @@ import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingPayment;
  *
  */
 @Repository
-public interface BookingPaymentRepository extends CrudRepository<BookingPayment, Long> {}
+public interface BookingPaymentRepository extends CrudRepository<BookingPayment, Long> {
+    public boolean existsById(Integer id);
+}

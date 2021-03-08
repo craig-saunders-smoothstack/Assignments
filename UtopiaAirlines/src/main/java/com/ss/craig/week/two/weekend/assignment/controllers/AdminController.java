@@ -22,11 +22,6 @@ public class AdminController {
     {
         return "admin_seats";
     }
-    @GetMapping(value = "/bookings")
-    public String admin_bookings()
-    {
-        return "admin_bookings";
-    }
     @GetMapping(value = "/booking_override")
     public String admin_override()
     {

@@ -29,7 +29,7 @@ public class UtopiaWebSecurityConfig extends WebSecurityConfigurerAdapter {
           .and()
           .withUser("Patrick").password(passwordEncoder().encode("Is#1!ssHEADtrainer2021")).roles("USER", "EMPLOYEE")
           .and()
-          .withUser("Pramod").password(passwordEncoder().encode("Is#1!ssTrainer2021")).roles("USER");
+          .withUser("Akbar").password(passwordEncoder().encode("Is#1!ssTrainer2021")).roles("USER");
     }
     
     @Override
