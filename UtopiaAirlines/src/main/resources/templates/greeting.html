@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Getting Started: Serving Web Content</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <p th:text="'Hello, ' + ${name} + '!'" /><br />
+    How would you like to proceed as?<br /><br />
+    <a href="/admin/">Administrator</a><br />
+    <a href="/employee/">Employee</a><br />
+    <a href="/user/">User</a><br />
+    <a href="/guest/">Guest</a><br />
+</body>
+</html>
