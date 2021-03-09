@@ -22,7 +22,7 @@ public class BookingUser implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = -5688288860418646381L;
+    private static final long serialVersionUID = -6394153335432909856L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -31,13 +31,14 @@ public class BookingUser implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(unique=true, nullable=false, precision=10)
     private int id;
-    @Column(name="user_id", nullable=false, precision=10)
-    private int userId;
+    @OneToMany(mappedBy="bookingUser")
+    private Set<Ticket> ticket;
     @ManyToOne(optional=false)
     @JoinColumn(name="booking_id", nullable=false)
     private Booking booking;
-    @OneToMany(mappedBy="bookingUser")
-    private Set<Ticket> ticket;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="user_id", nullable=false)
+    private User user;
 
     /** Default constructor. */
     public BookingUser() {
@@ -63,21 +64,21 @@ public class BookingUser implements Serializable {
     }
 
     /**
-     * Access method for userId.
+     * Access method for ticket.
      *
-     * @return the current value of userId
+     * @return the current value of ticket
      */
-    public int getUserId() {
-        return userId;
+    public Set<Ticket> getTicket() {
+        return ticket;
     }
 
     /**
-     * Setter method for userId.
+     * Setter method for ticket.
      *
-     * @param aUserId the new value for userId
+     * @param aTicket the new value for ticket
      */
-    public void setUserId(int aUserId) {
-        userId = aUserId;
+    public void setTicket(Set<Ticket> aTicket) {
+        ticket = aTicket;
     }
 
     /**
@@ -99,21 +100,21 @@ public class BookingUser implements Serializable {
     }
 
     /**
-     * Access method for ticket.
+     * Access method for user.
      *
-     * @return the current value of ticket
+     * @return the current value of user
      */
-    public Set<Ticket> getTicket() {
-        return ticket;
+    public User getUser() {
+        return user;
     }
 
     /**
-     * Setter method for ticket.
+     * Setter method for user.
      *
-     * @param aTicket the new value for ticket
+     * @param aUser the new value for user
      */
-    public void setTicket(Set<Ticket> aTicket) {
-        ticket = aTicket;
+    public void setUser(User aUser) {
+        user = aUser;
     }
 
     /**

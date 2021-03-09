@@ -44,9 +44,9 @@ public class Booking implements Serializable {
     @OneToMany(mappedBy="booking")
     private Set<BookingPayment> bookingPayment;
     @OneToMany(mappedBy="booking")
-    private Set<BookingUser> bookingUser;
-    @OneToMany(mappedBy="booking")
     private Set<Ticket> ticket;
+    @OneToMany(mappedBy="booking")
+    private Set<BookingUser> bookingUser;
 
     /** Default constructor. */
     public Booking() {
@@ -198,24 +198,6 @@ public class Booking implements Serializable {
     }
 
     /**
-     * Access method for bookingUser.
-     *
-     * @return the current value of bookingUser
-     */
-    public Set<BookingUser> getBookingUser() {
-        return bookingUser;
-    }
-
-    /**
-     * Setter method for bookingUser.
-     *
-     * @param aBookingUser the new value for bookingUser
-     */
-    public void setBookingUser(Set<BookingUser> aBookingUser) {
-        bookingUser = aBookingUser;
-    }
-
-    /**
      * Access method for ticket.
      *
      * @return the current value of ticket
@@ -231,6 +213,24 @@ public class Booking implements Serializable {
      */
     public void setTicket(Set<Ticket> aTicket) {
         ticket = aTicket;
+    }
+
+    /**
+     * Access method for bookingUser.
+     *
+     * @return the current value of bookingUser
+     */
+    public Set<BookingUser> getBookingUser() {
+        return bookingUser;
+    }
+
+    /**
+     * Setter method for bookingUser.
+     *
+     * @param aBookingUser the new value for bookingUser
+     */
+    public void setBookingUser(Set<BookingUser> aBookingUser) {
+        bookingUser = aBookingUser;
     }
 
     /**

@@ -86,9 +86,12 @@
 					<td class="column width_td" th:text="${obj.id}"></td>
 					<td class="column width_td" th:text="${obj.booking.id}"></td>
 					<td class="column width_td" th:text="${obj.bookingPayment.id}"></td>
-					<td class="column width_td" th:text="${obj.bookingAgent.id}"></td>
-					<td class="column width_td" th:text="${obj.bookingUser.id}"></td>
-					<td class="column width_td" th:text="${obj.bookingGuest.id}"></td>
+					<td th:if="${obj.bookingAgent} != null" class="column width_td" th:text="${obj.bookingAgent.id}"></td>
+					<td th:if="${obj.bookingAgent} == null" class="column width_td">NONE</td>
+					<td th:if="${obj.bookingUser} != null" class="column width_td" th:text="${obj.bookingUser.id}"></td>
+					<td th:if="${obj.bookingUser} == null" class="column width_td">NONE</td>
+					<td th:if="${obj.bookingGuest} != null" class="column width_td" th:text="${obj.bookingGuest.id}"></td>
+					<td th:if="${obj.bookingGuest} == null" class="column width_td">NONE</td>
 					<td class="column width_td" th:text="${obj.flightBookings.id}"></td>
 					<td class="column width_td" th:text="${obj.passenger.id}"></td>
 				</tr>
@@ -125,7 +128,7 @@
 			</form>
 		</div>
 		<div th:if="${form_display} == display" id='form' class='node'>
-			<form method='post' action='/admin/flights' th:object='${form_result}'>
+			<form method='post' action='/admin/tickets' th:object='${form_result}'>
 				<input type='hidden' th:name='${_csrf.parameterName}' th:value='${_csrf.token}'/>
 				<input type='hidden' name='form_action' th:value='${form_action}'/>
 				<input type='hidden' id='object_id' name='object_id' th:value="${object_id}"/>
@@ -180,7 +183,7 @@
 								</div>
 							</div>
 						</div>
-						<div th:if="${form_action} != add" class="row">            
+						<div th:if="${form_action} != add and ${form_result.bookingAgent.user} != null" class="row">            
 							<div class="column full_width">
 				    			<div class="form-group">
 									<label for='booking_agent_user_id' class='control-label'>Booking Agent User ID:</label>
@@ -188,7 +191,7 @@
 								</div>
 							</div>
 						</div>
-						<div th:if="${form_action} != add" class="row">            
+						<div th:if="${form_action} != add and ${form_result.bookingUser.user} != null" class="row">            
 							<div class="column full_width">
 				    			<div class="form-group">
 									<label for='booking_user_user_id' class='control-label'>Booking User User ID:</label>
@@ -205,7 +208,7 @@
 							</div>
 						</div>		
 						<div class="row">            
-							<div class="column full_width">
+							<div th:if="${form_action} != add" class="column full_width">
 				    			<div class="form-group">
 									<label for='booking_guest_email' class='control-label'>Booking Guest Email:</label>
 									<input type='text' id='booking_guest_email' th:field='*{bookingGuest.contactEmail}' class='form-control' th:value='${form_result.bookingGuest.contactEmail}' />
@@ -213,7 +216,7 @@
 							</div>
 						</div>		
 						<div class="row">            
-							<div class="column full_width">
+							<div th:if="${form_action} != add" class="column full_width">
 				    			<div class="form-group">
 									<label for='booking_guest_phone' class='control-label'>Booking Guest Phone:</label>
 									<input type='text' id='booking_guest_phone' th:field='*{bookingGuest.contactPhone}' class='form-control' th:value='${form_result.bookingGuest.contactPhone}' />

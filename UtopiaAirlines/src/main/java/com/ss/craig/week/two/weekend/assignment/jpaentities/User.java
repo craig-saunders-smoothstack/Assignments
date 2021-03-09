@@ -25,7 +25,7 @@ public class User implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = -8478658090013687753L;
+    private static final long serialVersionUID = -7665401287760228654L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -48,6 +48,8 @@ public class User implements Serializable {
     private String username;
     @OneToMany(mappedBy="user")
     private Set<BookingAgent> bookingAgent;
+    @OneToMany(mappedBy="user")
+    private Set<BookingUser> bookingUser;
     @ManyToOne(optional=false)
     @JoinColumn(name="role_id", nullable=false)
     private UserRole userRole;
@@ -199,6 +201,24 @@ public class User implements Serializable {
      */
     public void setBookingAgent(Set<BookingAgent> aBookingAgent) {
         bookingAgent = aBookingAgent;
+    }
+
+    /**
+     * Access method for bookingUser.
+     *
+     * @return the current value of bookingUser
+     */
+    public Set<BookingUser> getBookingUser() {
+        return bookingUser;
+    }
+
+    /**
+     * Setter method for bookingUser.
+     *
+     * @param aBookingUser the new value for bookingUser
+     */
+    public void setBookingUser(Set<BookingUser> aBookingUser) {
+        bookingUser = aBookingUser;
     }
 
     /**

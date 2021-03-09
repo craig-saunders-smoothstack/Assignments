@@ -18,10 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Booking;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingAgent;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingGuest;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingPayment;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingUser;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.Flight;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.FlightBookings;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Passenger;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Ticket;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.User;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingAgentRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingGuestRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingPaymentRepository;
@@ -182,7 +187,7 @@ public class AdminTicketController {
     }
 
     private Model addListAttributes(Model model, String header, List<Ticket> all, Ticket obj)
-    {        
+    {
         model.addAttribute("choices_display", "display");
         model.addAttribute("header_text", header);
         model.addAttribute("form_result", obj);
@@ -203,9 +208,27 @@ public class AdminTicketController {
         {
             form_result.setBookingPayment(new BookingPayment());
         }
+        if (form_result.getBookingAgent() == null)
+        {
+            form_result.setBookingAgent(new BookingAgent());
+        }
+        if (form_result.getBookingAgent().getUser() == null)
+        {
+            form_result.getBookingAgent().setUser(new User());
+        }
+        if (form_result.getBookingUser() == null)
+        {
+            form_result.setBookingUser(new BookingUser());
+        }
+        if (form_result.getBookingGuest() == null)
+        {
+            form_result.setBookingGuest(new BookingGuest());
+        }
         if (form_result.getFlightBookings() == null)
         {
-            form_result.setFlightBookings(new FlightBookings());
+            FlightBookings fb = new FlightBookings();
+            fb.setFlight(new Flight());
+            form_result.setFlightBookings(fb);
         }
         if (form_result.getPassenger() == null)
         {
@@ -227,67 +250,91 @@ public class AdminTicketController {
             Booking booking = new Booking();
             if (!booking_repo.existsById(form_result.getBooking().getId()))
             {
-                booking = booking_repo.save(form_result.getBooking());
+                booking = booking_repo.save(form_result.getBooking());                
             }
             if (!booking_payment_repo.existsById(form_result.getBookingPayment().getId()))
             {
                 form_result.getBookingPayment().setBooking(booking);
-                booking_payment_repo.save(form_result.getBookingPayment());
             }  
             if (!flight_bookings_repo.existsById(form_result.getFlightBookings().getId()))
             {
                 form_result.getFlightBookings().setBooking(booking);
-                flight_bookings_repo.save(form_result.getFlightBookings());
-            }  
+            }
             if (form_result.getBookingAgent() != null && !booking_agent_repo.existsById(form_result.getBookingAgent().getId()))
             {
+                if (form_result.getBookingAgent().getUser() == null)
+                {
+                    form_result.getBookingAgent().setUser(new User());
+                }                
                 form_result.getBookingAgent().setBooking(booking);
-                booking_agent_repo.save(form_result.getBookingAgent());
             } 
-            if (user_id != null)
+            if (user_id != null && !user_id.equals(""))
             {
                 form_result.getPassenger().setFamilyName(user_repo.findById(parseIntSafe(user_id)).getFamilyName());
                 form_result.getPassenger().setGivenName(user_repo.findById(parseIntSafe(user_id)).getGivenName());
+                form_result.getBookingUser().getUser().setFamilyName(user_repo.findById(parseIntSafe(user_id)).getFamilyName());
+                form_result.getBookingUser().getUser().setFamilyName(user_repo.findById(parseIntSafe(user_id)).getGivenName());
             }      
-            if (guest_email != null)
+            if (guest_email != null && !guest_email.equals(""))
             {
+                
+                if (form_result.getBookingGuest() == null)
+                {
+                    form_result.setBookingGuest(new BookingGuest());
+                }
                 form_result.getBookingGuest().setContactEmail(guest_email);
                 form_result.getBookingGuest().setContactPhone(guest_phone);
             }
             if (form_result.getBookingUser() != null && !booking_user_repo.existsById(form_result.getBookingUser().getId()))
             {
+                if (form_result.getBookingUser().getUser() == null)
+                {
+                    form_result.getBookingUser().setUser(new User());
+                }
                 form_result.getBookingUser().setBooking(booking);
-                booking_user_repo.save(form_result.getBookingUser());
             } 
             if (form_result.getBookingGuest() != null && !booking_guest_repo.existsById(form_result.getBookingGuest().getId()))
             {
                 form_result.getBookingGuest().setBooking(booking);
-                booking_guest_repo.save(form_result.getBookingGuest());
             }
             if (!passenger_repo.existsById(form_result.getPassenger().getId()))
             {
                 form_result.getPassenger().setBooking(booking);
-                passenger_repo.save(form_result.getPassenger());
-            }  
-            
+            } 
             Ticket result = form_result;
+            
             if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))
             {
-                try
+                if(!booking_repo.existsById(form_result.getBooking().getId()))
                 {
-                    result.getBooking().setId(parseIntSafe(object_id));
-                    if (verb.equals("Updated"))
+                    try
                     {
-                        result = object_repo.save(form_result);
+                        result.getBooking().setId(parseIntSafe(object_id));
+                        if (verb.equals("Updated"))
+                        {
+                            result = object_repo.save(form_result);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        object_id = Integer.toString(form_result.getBooking().getId());
                     }
                 }
-                catch (Exception e)
-                {
-                    object_id = Integer.toString(form_result.getBooking().getId());
+                else
+                {                
+                    model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
+                            VIEW_EDIT_STR, form_result, "Not "+verb, object_id);                    
                 }
             }
             else if (verb.equals("Created"))
             {
+                booking_payment_repo.save(form_result.getBookingPayment());
+                flight_bookings_repo.save(form_result.getFlightBookings());
+                booking_agent_repo.save(form_result.getBookingAgent());
+                booking_user_repo.save(form_result.getBookingUser());
+                booking_guest_repo.save(form_result.getBookingGuest());
+                passenger_repo.save(form_result.getPassenger());
+                
                 result = object_repo.save(form_result);
             }
             model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
@@ -299,5 +346,5 @@ public class AdminTicketController {
                     VIEW_EDIT_STR, form_result, "Not "+verb, object_id);
         }
         return model;
-    }    
+    } 
 }
