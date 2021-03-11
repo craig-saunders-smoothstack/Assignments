@@ -22,7 +22,7 @@ public class Passenger implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = 9005080027424607710L;
+    private static final long serialVersionUID = 986153367890453582L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -31,19 +31,24 @@ public class Passenger implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(unique=true, nullable=false, precision=10)
     private int id;
+    @Column(name="seat_number", nullable=false, precision=10)
+    private int seatNumber;
     @Column(nullable=false, length=128)
     private String address;
     @Column(nullable=false, length=11)
     private String dob;
+    @Column(name="given_name", nullable=false, length=32)
+    private String givenName;
     @Column(name="family_name", nullable=false, length=32)
     private String familyName;
     @Column(length=32)
     private String gender;
-    @Column(name="given_name", nullable=false, length=32)
-    private String givenName;
     @ManyToOne(optional=false)
     @JoinColumn(name="booking_id", nullable=false)
     private Booking booking;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="airplane_id", nullable=false)
+    private Airplane airplane;
     @OneToMany(mappedBy="passenger")
     private Set<Ticket> ticket;
 
@@ -68,6 +73,24 @@ public class Passenger implements Serializable {
      */
     public void setId(int aId) {
         id = aId;
+    }
+
+    /**
+     * Access method for seatNumber.
+     *
+     * @return the current value of seatNumber
+     */
+    public int getSeatNumber() {
+        return seatNumber;
+    }
+
+    /**
+     * Setter method for seatNumber.
+     *
+     * @param aSeatNumber the new value for seatNumber
+     */
+    public void setSeatNumber(int aSeatNumber) {
+        seatNumber = aSeatNumber;
     }
 
     /**
@@ -107,6 +130,24 @@ public class Passenger implements Serializable {
     }
 
     /**
+     * Access method for givenName.
+     *
+     * @return the current value of givenName
+     */
+    public String getGivenName() {
+        return givenName;
+    }
+
+    /**
+     * Setter method for givenName.
+     *
+     * @param aGivenName the new value for givenName
+     */
+    public void setGivenName(String aGivenName) {
+        givenName = aGivenName;
+    }
+
+    /**
      * Access method for familyName.
      *
      * @return the current value of familyName
@@ -143,24 +184,6 @@ public class Passenger implements Serializable {
     }
 
     /**
-     * Access method for givenName.
-     *
-     * @return the current value of givenName
-     */
-    public String getGivenName() {
-        return givenName;
-    }
-
-    /**
-     * Setter method for givenName.
-     *
-     * @param aGivenName the new value for givenName
-     */
-    public void setGivenName(String aGivenName) {
-        givenName = aGivenName;
-    }
-
-    /**
      * Access method for booking.
      *
      * @return the current value of booking
@@ -176,6 +199,24 @@ public class Passenger implements Serializable {
      */
     public void setBooking(Booking aBooking) {
         booking = aBooking;
+    }
+
+    /**
+     * Access method for airplane.
+     *
+     * @return the current value of airplane
+     */
+    public Airplane getAirplane() {
+        return airplane;
+    }
+
+    /**
+     * Setter method for airplane.
+     *
+     * @param aAirplane the new value for airplane
+     */
+    public void setAirplane(Airplane aAirplane) {
+        airplane = aAirplane;
     }
 
     /**

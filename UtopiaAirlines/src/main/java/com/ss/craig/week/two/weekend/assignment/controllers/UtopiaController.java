@@ -1,5 +1,5 @@
 /**
- * Rest controller providing mappings between any requested path and its handler method
+ * Controller providing mappings between any requested path and its handler method
  */
 package com.ss.craig.week.two.weekend.assignment.controllers;
 

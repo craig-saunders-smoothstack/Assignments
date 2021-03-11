@@ -3,8 +3,16 @@
  */
 package com.ss.craig.week.two.weekend.assignment.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
+
+import javax.transaction.Transactional;
 
 import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +30,16 @@ import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingAgent;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingGuest;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingPayment;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.BookingUser;
-import com.ss.craig.week.two.weekend.assignment.jpaentities.Flight;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.FlightBookings;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Passenger;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Ticket;
-import com.ss.craig.week.two.weekend.assignment.jpaentities.User;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingAgentRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingGuestRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingPaymentRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingUserRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.FlightBookingsRepository;
+import com.ss.craig.week.two.weekend.assignment.repositories.FlightRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.PassengerRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.TicketRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.UserRepository;
@@ -43,14 +50,19 @@ import com.ss.craig.week.two.weekend.assignment.repositories.UserRepository;
  */
 @Controller
 @RequestMapping(path = "/admin/", produces = MediaType.TEXT_HTML_VALUE)
-public class AdminTicketController {
-    private final String VIEW_EDIT_STR = "What would you like to view/edit?";
-    private final String CREATE_YOUR_STR = "Create your ticket:";
-    private final String CHOOSE_OBJ_STR = "Choose the ticket to ";
-    private final String FAILED_STR = " failed: not a valid ";
-    private final String OBJECT_STR = "Ticket";
-    private final String TEMPLATE_STR = "admin_tickets";
-    private final String MAPPING_STR = "/tickets";
+public class AdminTicketController extends AdminController{
+    //private final String CREATE_YOUR_STR = "Create your ticket:";
+    private final String OBJECT_STR = "ticket";
+    private final String[] COLUMN_NAMES = {
+            "ID",
+            "BOOKING ID",
+            "BOOKING PAYMENT ID",
+            "BOOKING AGENT ID",
+            "BOOKING USER ID",
+            "BOOKING GUEST ID",
+            "FLIGHT BOOKINGS ID",
+            "PASSENGER ID"
+    };
     
     @Autowired
     private TicketRepository object_repo;
@@ -68,12 +80,14 @@ public class AdminTicketController {
     @Autowired
     private FlightBookingsRepository flight_bookings_repo;
     @Autowired
+    private FlightRepository flight_repo;
+    @Autowired
     private PassengerRepository passenger_repo;
     @Autowired
     private UserRepository user_repo;
     
-    @PostMapping(value = MAPPING_STR)
-    public String passengerSubmit(@ModelAttribute Ticket form_result, 
+    @PostMapping(value = "/"+OBJECT_STR+"s")
+    public String ticketSubmit(@ModelAttribute Ticket form_result, 
             @RequestParam(name = "form_action", defaultValue = "update")String form_action, 
             @RequestParam(name = "object_id", defaultValue = "")String object_id,
             @RequestParam(name = "user_id", defaultValue = "")String user_id,
@@ -83,268 +97,331 @@ public class AdminTicketController {
     {
         if (form_action.equals("read"))
         {
-            model = addPostAttributes(model, form_result, object_id, user_id, guest_email, guest_phone, "Read");
+            model = addPostAttributes(model, OBJECT_STR, form_result, object_id, "Read");
         }
         else if (form_action.equals("update"))
         {
-            model = addPostAttributes(model, form_result, object_id, user_id, guest_email, guest_phone, "Updated");
+            model = addPostAttributes(model, OBJECT_STR, form_result, object_id, "Updated");
         }
-        else if (form_action.equals("add"))
+        else if (form_action.equals("create"))
         {
-            model = addPostAttributes(model, form_result, object_id, user_id, guest_email, guest_phone, "Created");
+            model = addPostAttributes(model, OBJECT_STR, form_result, object_id, "Created");
         }
         else if (form_action.equals("delete"))
         {
             object_repo.delete(object_repo.findById(Integer.parseInt(object_id)));
-            model = addPostAttributes(model, form_result, object_id, user_id, guest_email, guest_phone, "Deleted");
+            model = addPostAttributes(model, OBJECT_STR, form_result, object_id, "Deleted");
         }
-        return TEMPLATE_STR;
+        return "admin_tickets";
     }
     
-    @GetMapping(value = MAPPING_STR)
-    public String adminPassengers(
-            @RequestParam(name = "action", defaultValue = "choose") String action,
+    @GetMapping(value = "/"+OBJECT_STR+"s")
+    public String adminTickets(
+            @RequestParam(name = "action", defaultValue = "choose") String get_action,
+            @RequestParam(name = "user_type", defaultValue = "") String user_type,
             @RequestParam(name = "object_id", defaultValue = "") String object_id,
             Model model)
     {
-        Ticket empty_object = new Ticket();    
-        if (action.equals("choose"))
+        
+        if (get_action.equals("choose"))
         { 
-            model = addGetAttributes(model, Arrays.asList("choices_display"), VIEW_EDIT_STR, empty_object, "", "");
+            model = addChoicesAttributes(model, OBJECT_STR);
         }
-        else if (action.equals("list"))
+        else if (get_action.equals("list"))
         {
-            model = addListAttributes(model, VIEW_EDIT_STR, (List<Ticket>) object_repo.findAll(), empty_object);
+            model = addListAttributes(model, OBJECT_STR, StreamSupport.stream(object_repo.findAll().spliterator(), false)
+                    .collect(Collectors.toList()), COLUMN_NAMES);
         }
-        else if (action.equals("add"))
-        { 
-            model = addGetAttributes(model, Arrays.asList("form_display"), CREATE_YOUR_STR, empty_object, "add", "");
-        }
-        else if (action.equals("delete_id"))
+        else if (get_action.equals("read_id") || get_action.equals("update_id") || get_action.equals("delete_id"))
         {
-            int id = parseIntSafe(object_id);         
-            if (id > 0 && object_repo.existsById(id))
-            {
-                model = addGetAttributes(model, Arrays.asList("form_display"), "Delete your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "delete", object_id);
-            }
-            else
-            {
-                model = addGetAttributes(model, Arrays.asList("choices_display"), "Delete "+FAILED_STR+" id", empty_object, "choose", "");
-            }
+            model = addFormAttributes(model, object_id, OBJECT_STR, get_action.substring(0,get_action.length()-3));
         }
-        else if (action.equals("delete"))
+        else if (get_action.equals("create"))
         {
-            model = addGetAttributes(model, Arrays.asList("id_form_display"), CHOOSE_OBJ_STR+"delete:", empty_object, "delete_id", "");
+            model = addCreationFormAttributes(model, user_type);
         }
-        else if (action.equals("update_id"))
+        else if (get_action.equals("read") || get_action.equals("update") || get_action.equals("delete"))
         {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
-            {
-                model = addGetAttributes(model, Arrays.asList("form_display"), "Update your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "update", object_id);
-            }
-            else
-            {
-                model = addGetAttributes(model, Arrays.asList("choices_display"), "Update "+FAILED_STR+" id", empty_object, "choose", "");
-            }
+            model = addIdFormAttributes(model, OBJECT_STR, get_action);
+            model.addAttribute("field_id", "Ticket ID");
         }
-        else if (action.equals("update"))
-        {
-            model = addGetAttributes(model, Arrays.asList("id_form_display"), CHOOSE_OBJ_STR+"update:", empty_object, "update_id", "");
-        }
-        else if (action.equals("read_id"))
-        {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
-            {
-                model = addGetAttributes(model, Arrays.asList("form_display"), "Read your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "read", object_id);
-            }
-            else
-            {
-                model = addGetAttributes(model, Arrays.asList("choices_display"), "Read "+FAILED_STR+" id", empty_object, "choose", "");
-            }
-        }
-        else if (action.equals("read"))
-        {
-            model = addGetAttributes(model, Arrays.asList("id_form_display"),
-                    CHOOSE_OBJ_STR+"read:", empty_object, "read_id", "");
-        }
-        return TEMPLATE_STR;
-    }
-    
-    private int parseIntSafe(String num)
-    {
-        int id = 0;
-        try
-        {
-            id = Integer.parseInt(num);
-        }
-        catch(Exception e)
-        {   
-            id = -1;
-        } 
-        return id;
+        return "admin_tickets";
     }
 
-    private Model addListAttributes(Model model, String header, List<Ticket> all, Ticket obj)
+    private Model addCreationFormAttributes(Model model, String the_booker)
     {
-        model.addAttribute("choices_display", "display");
-        model.addAttribute("header_text", header);
-        model.addAttribute("form_result", obj);
-        model.addAttribute("form_action", "list_all");
-        model.addAttribute("obj_list", all);
-        model.addAttribute("object_id", "");
+        model.addAttribute("form_display", "display");
+        model.addAttribute("header_text", "Create your "+OBJECT_STR.toLowerCase()+":");
+        model.addAttribute("form_action", "create");
+        model.addAttribute("obj_name", OBJECT_STR);
+        model.addAttribute("form_result", getEmptyObject());
+        model = getCreationFormAttributes(model, the_booker);
+        return model;
+    }
+
+    private Model addFormAttributes(Model model, String object_id, String obj_name, String form_action)
+    {
+        int id = parseIntSafe(object_id); 
+        if ((id > 0 && object_repo.existsById(id)) || form_action.equals("create"))
+        {
+            model.addAttribute("form_display", "display");
+            model.addAttribute("header_text", capitolizeFirst(form_action)+" your "+obj_name.toLowerCase()+":");
+            model.addAttribute("form_action", form_action);
+            model.addAttribute("object_id", object_id);
+            model.addAttribute("obj_name", obj_name);
+            model.addAttribute("form_result", getEmptyObject());
+            model = getFormAttributes(model, object_repo.findById(id));
+        }
+        else
+        {
+            model = addChoicesAttributes(model, obj_name);
+            model.addAttribute("header_text", FAILED_STR+" id");
+        }
         return model;
     }
     
-    private Model addGetAttributes(Model model, List<String> displays,
-            String header, Ticket form_result, String form_action, String object_id)
-    {
-        if (form_result.getBooking() == null)
-        {
-            form_result.setBooking(new Booking());
-        }
-        if (form_result.getBookingPayment() == null)
-        {
-            form_result.setBookingPayment(new BookingPayment());
-        }
-        if (form_result.getBookingAgent() == null)
-        {
-            form_result.setBookingAgent(new BookingAgent());
-        }
-        if (form_result.getBookingAgent().getUser() == null)
-        {
-            form_result.getBookingAgent().setUser(new User());
-        }
-        if (form_result.getBookingUser() == null)
-        {
-            form_result.setBookingUser(new BookingUser());
-        }
-        if (form_result.getBookingGuest() == null)
-        {
-            form_result.setBookingGuest(new BookingGuest());
-        }
-        if (form_result.getFlightBookings() == null)
-        {
-            FlightBookings fb = new FlightBookings();
-            fb.setFlight(new Flight());
-            form_result.setFlightBookings(fb);
-        }
-        if (form_result.getPassenger() == null)
-        {
-            form_result.setPassenger(new Passenger());
-        }
-        displays.stream().forEach(s -> model.addAttribute(s,"display"));
-        model.addAttribute("header_text", header);
+    private Model addListAttributes(Model model, String obj_name, List<Ticket> all, String[] column_names)
+    {       
+        addChoicesAttributes(model, obj_name);
+        model.addAttribute("form_action", "list_all");
+        model.addAttribute("obj_list", all);
+        model.addAttribute("column_names", column_names);
+        model.addAttribute("all_fields_lists", getAllFieldsLists(all));
+        return model;
+    }
+
+    private Model addResultAttributes(Model model, String obj_name, Object form_result, String verb, String object_id, boolean successful)
+    {      
+        model.addAttribute("result_display", "display");
         model.addAttribute("form_result", form_result);
-        model.addAttribute("form_action", form_action);
         model.addAttribute("object_id", object_id);
-        return model;        
+        model.addAttribute("column_names", COLUMN_NAMES);
+        
+        if (successful)
+        {
+            
+            Map<String, String> fields_map = IntStream.range(0, COLUMN_NAMES.length).boxed()
+                    .collect(Collectors.toMap(Arrays.asList(COLUMN_NAMES)::get, getFieldsList((Ticket)form_result)::get));
+            model.addAttribute("fields_map", fields_map);
+            model.addAttribute("form_action", capitolizeFirst(verb)); 
+            addChoicesAttributes(model, obj_name);
+        }
+        else 
+        {
+            model.addAttribute("form_action", "Not "+capitolizeFirst(verb));
+            addChoicesAttributes(model, obj_name);
+        }
+        return model;
     }
     
-    private Model addPostAttributes(Model model, Ticket form_result, String object_id, String user_id, String guest_email, String guest_phone, String verb)
+    private Model addPostAttributes(Model model, String obj_name, Ticket form_result, String object_id, String verb)
     {
-        if (form_result != null && form_result.getBooking() != null && form_result.getBookingPayment() != null &&
-                form_result.getFlightBookings() != null && form_result.getPassenger() != null)
+        if (form_result != null && form_result.getBookingPayment() != null &&
+                form_result.getFlightBookings() != null && form_result.getPassenger() != null && 
+                (form_result.getBookingAgent() != null || form_result.getBookingGuest() != null || form_result.getBookingUser() != null))
         {
-            Booking booking = new Booking();
-            if (!booking_repo.existsById(form_result.getBooking().getId()))
-            {
-                booking = booking_repo.save(form_result.getBooking());                
-            }
-            if (!booking_payment_repo.existsById(form_result.getBookingPayment().getId()))
-            {
-                form_result.getBookingPayment().setBooking(booking);
-            }  
-            if (!flight_bookings_repo.existsById(form_result.getFlightBookings().getId()))
-            {
-                form_result.getFlightBookings().setBooking(booking);
-            }
-            if (form_result.getBookingAgent() != null && !booking_agent_repo.existsById(form_result.getBookingAgent().getId()))
-            {
-                if (form_result.getBookingAgent().getUser() == null)
-                {
-                    form_result.getBookingAgent().setUser(new User());
-                }                
-                form_result.getBookingAgent().setBooking(booking);
-            } 
-            if (user_id != null && !user_id.equals(""))
-            {
-                form_result.getPassenger().setFamilyName(user_repo.findById(parseIntSafe(user_id)).getFamilyName());
-                form_result.getPassenger().setGivenName(user_repo.findById(parseIntSafe(user_id)).getGivenName());
-                form_result.getBookingUser().getUser().setFamilyName(user_repo.findById(parseIntSafe(user_id)).getFamilyName());
-                form_result.getBookingUser().getUser().setFamilyName(user_repo.findById(parseIntSafe(user_id)).getGivenName());
-            }      
-            if (guest_email != null && !guest_email.equals(""))
-            {
-                
-                if (form_result.getBookingGuest() == null)
-                {
-                    form_result.setBookingGuest(new BookingGuest());
-                }
-                form_result.getBookingGuest().setContactEmail(guest_email);
-                form_result.getBookingGuest().setContactPhone(guest_phone);
-            }
-            if (form_result.getBookingUser() != null && !booking_user_repo.existsById(form_result.getBookingUser().getId()))
-            {
-                if (form_result.getBookingUser().getUser() == null)
-                {
-                    form_result.getBookingUser().setUser(new User());
-                }
-                form_result.getBookingUser().setBooking(booking);
-            } 
-            if (form_result.getBookingGuest() != null && !booking_guest_repo.existsById(form_result.getBookingGuest().getId()))
-            {
-                form_result.getBookingGuest().setBooking(booking);
-            }
-            if (!passenger_repo.existsById(form_result.getPassenger().getId()))
-            {
-                form_result.getPassenger().setBooking(booking);
-            } 
             Ticket result = form_result;
-            
-            if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))
+            boolean successful = true;
+            if (form_result.getBooking() != null && (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted")) && booking_repo.existsById(parseIntSafe(object_id)))
             {
-                if(!booking_repo.existsById(form_result.getBooking().getId()))
+                result.setId(parseIntSafe(object_id));
+                try
                 {
-                    try
+                    result.getBooking().setId(parseIntSafe(object_id));
+                    if (verb.equals("Updated"))
                     {
-                        result.getBooking().setId(parseIntSafe(object_id));
-                        if (verb.equals("Updated"))
-                        {
-                            result = object_repo.save(form_result);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        object_id = Integer.toString(form_result.getBooking().getId());
+                        result = object_repo.save(form_result);
                     }
                 }
-                else
-                {                
-                    model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
-                            VIEW_EDIT_STR, form_result, "Not "+verb, object_id);                    
+                catch (Exception e)
+                {
+                    successful = false;
+                    object_id = Integer.toString(form_result.getBooking().getId());
                 }
             }
             else if (verb.equals("Created"))
             {
-                booking_payment_repo.save(form_result.getBookingPayment());
-                flight_bookings_repo.save(form_result.getFlightBookings());
-                booking_agent_repo.save(form_result.getBookingAgent());
-                booking_user_repo.save(form_result.getBookingUser());
-                booking_guest_repo.save(form_result.getBookingGuest());
-                passenger_repo.save(form_result.getPassenger());
-                
-                result = object_repo.save(form_result);
+                try
+                {
+                    createTicket(form_result);
+                }
+                catch (Exception e)
+                {
+                    successful = false;
+                    e.printStackTrace();
+                }
             }
-            model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
-                    VIEW_EDIT_STR, result, verb, Integer.toString(result.getBooking().getId()));
+            model = addResultAttributes(model, obj_name, form_result, verb, Integer.toString(result.getBooking().getId()), successful); 
         }
         else
-        {                
-            model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
-                    VIEW_EDIT_STR, form_result, "Not "+verb, object_id);
+        {
+            model = addResultAttributes(model, obj_name, form_result, "Not "+verb, object_id, false); 
         }
         return model;
     } 
+    
+    @Transactional(rollbackOn = Exception.class)
+    private void createTicket(Ticket ticket) throws Exception
+    {
+        Booking booking = new Booking();
+        booking.setIsActive(ticket.getBooking().getIsActive());
+        booking.setConfirmationCode(ticket.getBooking().getConfirmationCode());
+        ticket.setBooking(booking_repo.save(booking)); 
+        if (ticket.getBookingAgent() != null)
+        {
+            ticket.getBookingAgent().setUser(user_repo.findById(ticket.getBookingAgent().getUser().getId()));
+            ticket.getBookingAgent().setBooking(ticket.getBooking());
+            ticket.setBookingAgent(booking_agent_repo.save(ticket.getBookingAgent()));
+        } 
+        if (ticket.getBookingUser() != null)
+        {
+            ticket.getBookingUser().setUser(user_repo.findById(ticket.getBookingUser().getUser().getId()));
+            ticket.getBookingUser().setBooking(ticket.getBooking());
+            ticket.setBookingUser(booking_user_repo.save(ticket.getBookingUser()));
+        } 
+        else if (ticket.getBookingGuest() != null)
+        {
+            ticket.getBookingGuest().setBooking(ticket.getBooking());
+            ticket.setBookingGuest(booking_guest_repo.save(ticket.getBookingGuest()));            
+        } 
+        ticket.getBookingPayment().setBooking(ticket.getBooking());
+        ticket.setBookingPayment(booking_payment_repo.save(ticket.getBookingPayment()));
+        ticket.getFlightBookings().setBooking(ticket.getBooking());
+        ticket.getFlightBookings().setFlight(flight_repo.findById(ticket.getFlightBookings().getFlight().getId()));
+        ticket.setFlightBookings(flight_bookings_repo.save(ticket.getFlightBookings()));
+        if (ticket.getBookingGuest() == null)
+        {
+            if (ticket.getBookingUser() == null)
+            {
+                ticket.getPassenger().setGivenName(ticket.getBookingAgent().getUser().getGivenName());
+                ticket.getPassenger().setFamilyName(ticket.getBookingAgent().getUser().getFamilyName());
+            }
+            else
+            {
+                ticket.getPassenger().setGivenName(ticket.getBookingUser().getUser().getGivenName());
+                ticket.getPassenger().setFamilyName(ticket.getBookingUser().getUser().getFamilyName());
+            }
+        }
+        ticket.getPassenger().setBooking(ticket.getBooking());
+        ticket.getPassenger().setAirplane(ticket.getFlightBookings().getFlight().getAirplane());
+        ticket.setPassenger(passenger_repo.save(ticket.getPassenger()));
+        
+        object_repo.save(ticket);
+    }
+    
+    private Model getCreationFormAttributes(Model model, String the_booker)
+    {
+        Map<String, List<String>> fields_map = new HashMap<>();
+        fields_map.put("booking.isActive", Arrays.asList("Active:", ""));
+        fields_map.put("booking.confirmationCode", Arrays.asList("Confirmation Code:", ""));
+        fields_map.put("bookingPayment.refunded", Arrays.asList("Payment Refunded?:", ""));
+        fields_map.put("bookingPayment.stripeId", Arrays.asList("Payment Stripe ID:", ""));
+        fields_map.put("flightBookings.flight.id", Arrays.asList("Flight ID:", ""));
+        fields_map.put("passenger.address", Arrays.asList("Passenger Address:", ""));
+        fields_map.put("passenger.dob", Arrays.asList("Passenger Date of Birth:", ""));
+        fields_map.put("passenger.gender", Arrays.asList("Passenger Gender:", ""));
+        fields_map.put("passenger.seatNumber", Arrays.asList("Passenger Seat Number:", ""));
+        fields_map.put("passenger.address", Arrays.asList("Passenger Address:", ""));
+        fields_map.put("passenger.dob", Arrays.asList("Passenger Date of Birth:", ""));
+        
+        if (the_booker.equals("user"))
+        {
+            fields_map.put("bookingUser.user.id", Arrays.asList("Exisitng Traveler ID:", ""));
+        }
+        else if (the_booker.equals("guest"))
+        {
+            fields_map.put("bookingGuest.email", Arrays.asList("Booking Guest Email:", ""));
+            fields_map.put("bookingGuest.phone", Arrays.asList("Booking Guest Phone:", ""));
+            fields_map.put("passenger.givenName", Arrays.asList("Passenger Given Name:", ""));
+            fields_map.put("passenger.familyName", Arrays.asList("Passenger Family Name:", ""));
+        }
+        else if (the_booker.equals("agent"))
+        {
+            fields_map.put("bookingAgent.user.id", Arrays.asList("Exisitng Employee ID:", ""));
+        }
+        model.addAttribute("text_inputs", fields_map);
+        return model;
+    }
+    
+    private Model getFormAttributes(Model model, Ticket ticket)
+    {
+        Map<String, List<String>> fields_map = new HashMap<>();
+        if (ticket != null && ticket.getId() > 0)
+        {
+            fields_map.put("booking.id", Arrays.asList("Booking ID:", Integer.toString(ticket.getBooking().getId())));
+            fields_map.put("bookingPayment.id", Arrays.asList("Booking Payment ID:", Integer.toString(ticket.getBookingPayment().getId())));
+            if (ticket.getBookingAgent() != null)
+            {
+                fields_map.put("bookingAgent.id", Arrays.asList("Booking Agent ID:", Integer.toString(ticket.getBookingAgent().getId()))); 
+            }
+            if (ticket.getBookingUser() != null)
+            {
+                
+                fields_map.put("bookingUser.id", Arrays.asList("Booking User ID:", Integer.toString(ticket.getBookingUser().getId())));
+            }
+            if (ticket.getBookingGuest() != null)
+            {
+                fields_map.put("bookingGuest.id", Arrays.asList("Booking Guest ID:", Integer.toString(ticket.getBookingGuest().getId()))); 
+            }
+            fields_map.put("flightBookings.id", Arrays.asList("Flight Bookings ID:", Integer.toString(ticket.getFlightBookings().getId())));
+            fields_map.put("passenger.id", Arrays.asList("Passenger ID:", Integer.toString(ticket.getPassenger().getId())));
+            model.addAttribute("text_inputs", fields_map);
+        }        
+        return model;
+    }
+    
+    private List<String> getFieldsList(Ticket ticket)
+    {
+        List<String> fields_list = new ArrayList<>();
+        fields_list.add(Integer.toString(ticket.getId()) );
+        fields_list.add(Integer.toString(ticket.getBooking().getId()));
+        fields_list.add(Integer.toString(ticket.getBookingPayment().getId()));
+        if (ticket.getBookingAgent() != null)
+        {
+            fields_list.add(Integer.toString(ticket.getBookingAgent().getId()));
+        }
+        else
+        {
+            fields_list.add("");            
+        }
+        if (ticket.getBookingUser() != null)
+        {
+            fields_list.add(Integer.toString(ticket.getBookingUser().getId()));
+        }
+        else
+        {
+            fields_list.add("");            
+        }
+        if (ticket.getBookingGuest() != null)
+        {
+            fields_list.add(Integer.toString(ticket.getBookingGuest().getId()));
+        }
+        else
+        {
+            fields_list.add("");            
+        }
+        fields_list.add(Integer.toString(ticket.getFlightBookings().getId()));
+        fields_list.add(Integer.toString(ticket.getPassenger().getId()));
+        return fields_list;
+    }
+    
+    private List<List<String>> getAllFieldsLists(List<Ticket> all)
+    {
+        List<List<String>> all_fields_list = new ArrayList<>();
+        all.stream().forEach(f -> all_fields_list.add(getFieldsList(f)));
+        return all_fields_list;
+    }
+    
+    private Ticket getEmptyObject()
+    {
+        Ticket t = new Ticket();
+        t.setBooking(new Booking());
+        t.setBookingPayment(new BookingPayment());
+        t.setBookingAgent(new BookingAgent());
+        t.setBookingUser(new BookingUser());
+        t.setBookingGuest(new BookingGuest());
+        t.setFlightBookings(new FlightBookings());
+        t.setPassenger(new Passenger());
+        return t;
+    }
 }

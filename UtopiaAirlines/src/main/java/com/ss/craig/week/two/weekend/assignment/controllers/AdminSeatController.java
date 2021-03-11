@@ -15,7 +15,6 @@ import java.util.stream.StreamSupport;
 import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +23,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.ss.craig.week.two.weekend.assignment.jpaentities.Booking;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.Airplane;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Passenger;
-import com.ss.craig.week.two.weekend.assignment.jpaentities.User;
-import com.ss.craig.week.two.weekend.assignment.repositories.UserRepository;
-import com.ss.craig.week.two.weekend.assignment.repositories.UserRoleRepository;
+import com.ss.craig.week.two.weekend.assignment.jpaentities.Seat;
+import com.ss.craig.week.two.weekend.assignment.repositories.AirplaneRepository;
+import com.ss.craig.week.two.weekend.assignment.repositories.PassengerRepository;
+import com.ss.craig.week.two.weekend.assignment.repositories.SeatRepository;
 
 /**
  * @author Craig Saunders
@@ -36,27 +36,23 @@ import com.ss.craig.week.two.weekend.assignment.repositories.UserRoleRepository;
  */
 @Controller
 @RequestMapping(path = "/admin/", produces = MediaType.TEXT_HTML_VALUE)
-public class AdminUserController extends AdminController{
-    private final String OBJECT_STR = "user";
+public class AdminSeatController extends AdminController{
+    private final String OBJECT_STR = "seat";
     private final String[] COLUMN_NAMES = {
             "ID",
-            "ROLE ID",
-            "EMAIL",
-            "PHONE",
-            "GIVEN NAME",
-            "FAMILY NAME",
-            "USERNAME"
+            "AIRPLANE ID",
+            "SEAT NUMBER"
     };
 
     @Autowired
-    private UserRepository object_repo;
+    private SeatRepository object_repo;
     @Autowired
-    private UserRoleRepository user_role_repo; 
+    private AirplaneRepository airplane_repo;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PassengerRepository passenger_repo;
     
     @PostMapping(value = "/"+OBJECT_STR+"s")
-    public String userSubmit(@ModelAttribute User form_result, 
+    public String seatSubmit(@ModelAttribute Seat form_result, 
             @RequestParam(name = "form_action", defaultValue = "update")String form_action, 
             @RequestParam(name = "object_id", defaultValue = "")String object_id, 
             Model model) throws PropertyValueException
@@ -67,14 +63,6 @@ public class AdminUserController extends AdminController{
         }
         else if (form_action.equals("update"))
         {
-            if (!form_result.getPassword().equals("") && !passwordEncoder.matches(form_result.getPassword(), object_repo.findByUsername(form_result.getUsername()).getPassword()))
-            {
-                form_result.setPassword(passwordEncoder.encode(form_result.getPassword()));
-            }
-            else
-            {
-                form_result.setPassword(object_repo.findByUsername(form_result.getUsername()).getPassword());
-            }
             addPostAttributes(model, OBJECT_STR, form_result, object_id, "Updated");
         }
         else if (form_action.equals("create"))
@@ -85,7 +73,7 @@ public class AdminUserController extends AdminController{
         {
             try
             {
-                object_repo.delete(object_repo.findByUsername(object_id));
+                object_repo.delete(object_repo.findById(parseIntSafe(object_id)));
             }
             catch (Exception e)
             {
@@ -96,7 +84,7 @@ public class AdminUserController extends AdminController{
     }
     
     @GetMapping(value = "/"+OBJECT_STR+"s")
-    public String adminUsers(
+    public String adminSeats(
             @RequestParam(name = "action", defaultValue = "choose") String get_action,
             @RequestParam(name = "object_id", defaultValue = "") String object_id,
             Model model)
@@ -121,14 +109,14 @@ public class AdminUserController extends AdminController{
         else if (get_action.equals("read") || get_action.equals("update") || get_action.equals("delete"))
         {
             model = addIdFormAttributes(model, OBJECT_STR, get_action);
-            model.addAttribute("field_id", "Username");
+            model.addAttribute("field_id", "Seat ID:");
         }
         return TEMPLATE_STR;
     }
     
     private Model addFormAttributes(Model model, String object_id, String obj_name, String form_action)
     {
-        if ((!object_id.equals("") && object_repo.existsByUsername(object_id)) || form_action.equals("create"))
+        if ((!object_id.equals("") && object_repo.existsById(parseIntSafe(object_id))) || form_action.equals("create"))
         {
             model.addAttribute("form_display", "display");
             model.addAttribute("header_text", capitolizeFirst(form_action)+" your "+obj_name.toLowerCase()+":");
@@ -136,7 +124,7 @@ public class AdminUserController extends AdminController{
             model.addAttribute("object_id", object_id);
             model.addAttribute("obj_name", obj_name);
             model.addAttribute("form_result", getEmptyObject());
-            model = getFormAttributes(model, object_repo.findByUsername(object_id));
+            model = getFormAttributes(model, object_repo.findById(parseIntSafe(object_id)));
         }
         else
         {
@@ -146,7 +134,7 @@ public class AdminUserController extends AdminController{
         return model;
     }
     
-    private Model addListAttributes(Model model, String obj_name, List<User> all, String[] column_names)
+    private Model addListAttributes(Model model, String obj_name, List<Seat> all, String[] column_names)
     {       
         addChoicesAttributes(model, obj_name);
         model.addAttribute("form_action", "list_all");
@@ -167,7 +155,7 @@ public class AdminUserController extends AdminController{
         {
             
             Map<String, String> fields_map = IntStream.range(0, COLUMN_NAMES.length).boxed()
-                    .collect(Collectors.toMap(Arrays.asList(COLUMN_NAMES)::get, getFieldsList((User)form_result)::get));
+                    .collect(Collectors.toMap(Arrays.asList(COLUMN_NAMES)::get, getFieldsList((Seat)form_result)::get));
             model.addAttribute("fields_map", fields_map);
             model.addAttribute("form_action", capitolizeFirst(verb)); 
             addChoicesAttributes(model, obj_name);
@@ -180,101 +168,101 @@ public class AdminUserController extends AdminController{
         return model;
     }
     
-    private Model addPostAttributes(Model model, String obj_name, User form_result, String object_id, String verb)
+    private Model addPostAttributes(Model model, String obj_name, Seat form_result, String object_id, String verb)
     {
-        form_result.setUserRole(user_role_repo.findById(form_result.getUserRole().getId()));
-        System.out.println(form_result != null && form_result.getUserRole() != null);
-        System.out.println(form_result != null);
-        System.out.println(form_result.getUserRole() != null);
-        System.out.println(form_result);
-        System.out.println(form_result.getUserRole());
-        if (form_result != null && form_result.getUserRole() != null)
+        form_result.setAirplane(airplane_repo.findById(form_result.getAirplane().getId()));
+        if (form_result != null && form_result.getAirplane() != null)
         {
-            User result = form_result;
+            Seat result = form_result;
             boolean is_success = true;
             if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))
             {
-                result.setUsername(object_id);
+                result.setId(parseIntSafe(object_id));
                 try
                 {
-                    if (verb.equals("Updated") && object_repo.existsByUsername(object_id))
+                    if (verb.equals("Updated"))
                     {
-                        form_result.setId(object_repo.findByUsername(object_id).getId());
                         result = object_repo.save(form_result);
                     }
                 }
                 catch (Exception e)
                 {
                     is_success = false;
-                    object_id = form_result.getUsername();
+                    object_id = Integer.toString(form_result.getId());
                 }
             }
             else if (verb.equals("Created"))
             {
-                result = object_repo.save(form_result);
+                Airplane ap = airplane_repo.findById(form_result.getAirplane().getId());
+                int max_seats = ap.getAirplaneType().getMaxCapacity();
+                List<Seat> all_seats = object_repo.findAllByAirplane(ap);
+                if (all_seats.size() < max_seats)
+                {
+                    if (all_seats.stream().filter(s -> s.getSeatNumber() == form_result.getSeatNumber()).collect(Collectors.toList()).size() == 0)
+                    {
+                        result = object_repo.save(form_result);
+                        List<Passenger> passengers = passenger_repo.findAllByAirplane(ap);
+                        if (passengers.size() > 0)
+                        {
+                            Passenger passenger = passengers.get(0);
+                            passenger.setSeatNumber(form_result.getSeatNumber());
+                            passenger_repo.save(passenger);
+                        }
+                    }
+                    else
+                    {
+                        is_success = false;
+                    }
+                }
             }
-            model = addResultAttributes(model, obj_name, result, verb, result.getUsername(), is_success);
+            model = addResultAttributes(model, obj_name, result, verb, Integer.toString(result.getId()), is_success);
         }
         else
         {                
-            model = addResultAttributes(model, obj_name, form_result, verb, form_result.getUsername(), false);
+            model = addResultAttributes(model, obj_name, form_result, "Not"+verb, Integer.toString(form_result.getId()), false);
         }
         return model;
     }
     
-    private Model getFormAttributes(Model model, User user)
+    private Model getFormAttributes(Model model, Seat passenger)
     {
         Map<String, List<String>> fields_map = new HashMap<>();
-        if (user != null && !user.getUsername().equals(""))
+        if (passenger != null && passenger.getId() > 0)
         {
-            fields_map.put("userRole.id", Arrays.asList("User Role:", Integer.toString(user.getUserRole().getId())));
-            fields_map.put("email", Arrays.asList("Email:", user.getEmail()));
-            fields_map.put("phone", Arrays.asList("Phone:", user.getPhone()));
-            fields_map.put("givenName", Arrays.asList("Given Name:", user.getGivenName()));  
-            fields_map.put("familyName", Arrays.asList("Family Name:", user.getFamilyName()));    
-            fields_map.put("username", Arrays.asList("Username:", user.getUsername()));  
-            fields_map.put("password", Arrays.asList("Password:", ""));  
+            fields_map.put("airplane.id", Arrays.asList("Airplane ID:", Integer.toString(passenger.getAirplane().getId())));
+            fields_map.put("seatNumber", Arrays.asList("Seat Number:", Integer.toString(passenger.getSeatNumber())));  
             model.addAttribute("text_inputs", fields_map);
         }
         else
         {
-            fields_map.put("userRole.id", Arrays.asList("User Role:", ""));
-            fields_map.put("email", Arrays.asList("Email:", ""));
-            fields_map.put("phone", Arrays.asList("Phone:", ""));
-            fields_map.put("givenName", Arrays.asList("Given Name:", ""));  
-            fields_map.put("familyName", Arrays.asList("Family Name:", ""));    
-            fields_map.put("username", Arrays.asList("Username:", ""));  
-            fields_map.put("password", Arrays.asList("Password:", ""));  
+            fields_map.put("airplane.id", Arrays.asList("Airplane ID:", ""));
+            fields_map.put("seatNumber", Arrays.asList("Seat Number:", ""));  
             model.addAttribute("text_inputs", fields_map);
         }
         
         return model;
     }
     
-    private List<String> getFieldsList(User user)
+    private List<String> getFieldsList(Seat seat)
     {
         List<String> fields_list = new ArrayList<>();
-        fields_list.add(Integer.toString(user.getId()));
-        fields_list.add(Integer.toString(user.getUserRole().getId()));
-        fields_list.add(user.getEmail());
-        fields_list.add(user.getPhone());
-        fields_list.add(user.getGivenName());
-        fields_list.add(user.getFamilyName());
-        fields_list.add(user.getUsername());
+        fields_list.add(Integer.toString(seat.getId()));
+        fields_list.add(Integer.toString(seat.getAirplane().getId()));
+        fields_list.add(Integer.toString(seat.getSeatNumber()));
         return fields_list;
     }
     
-    private List<List<String>> getAllFieldsLists(List<User> all)
+    private List<List<String>> getAllFieldsLists(List<Seat> all)
     {
         List<List<String>> all_fields_list = new ArrayList<>();
         all.stream().forEach(f -> all_fields_list.add(getFieldsList(f)));
         return all_fields_list;
     }
     
-    private Passenger getEmptyObject()
+    private Seat getEmptyObject()
     {
-        Passenger a = new Passenger();
-        a.setBooking(new Booking());
+        Seat a = new Seat();
+        a.setAirplane(new Airplane());
         return a;
     }
 }

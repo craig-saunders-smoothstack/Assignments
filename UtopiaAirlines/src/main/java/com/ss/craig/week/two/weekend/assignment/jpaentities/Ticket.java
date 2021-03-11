@@ -20,7 +20,7 @@ public class Ticket implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = -2676641747886742675L;
+    private static final long serialVersionUID = -8432258625851404725L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -29,6 +29,8 @@ public class Ticket implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(unique=true, nullable=false, precision=10)
     private int id;
+    @Column(name="is_canceled", nullable=false, precision=3)
+    private short isCanceled;
     @ManyToOne
     @JoinColumn(name="booking_agent_id")
     private BookingAgent bookingAgent;
@@ -72,6 +74,24 @@ public class Ticket implements Serializable {
      */
     public void setId(int aId) {
         id = aId;
+    }
+
+    /**
+     * Access method for isCanceled.
+     *
+     * @return the current value of isCanceled
+     */
+    public short getIsCanceled() {
+        return isCanceled;
+    }
+
+    /**
+     * Setter method for isCanceled.
+     *
+     * @param aIsCanceled the new value for isCanceled
+     */
+    public void setIsCanceled(short aIsCanceled) {
+        isCanceled = aIsCanceled;
     }
 
     /**

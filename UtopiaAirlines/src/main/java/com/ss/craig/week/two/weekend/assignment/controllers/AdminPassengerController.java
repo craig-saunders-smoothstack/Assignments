@@ -3,8 +3,14 @@
  */
 package com.ss.craig.week.two.weekend.assignment.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 import org.hibernate.PropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+import com.ss.craig.week.two.weekend.assignment.jpaentities.Airplane;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Booking;
 import com.ss.craig.week.two.weekend.assignment.jpaentities.Passenger;
+import com.ss.craig.week.two.weekend.assignment.repositories.AirplaneRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.BookingRepository;
 import com.ss.craig.week.two.weekend.assignment.repositories.PassengerRepository;
 
@@ -29,168 +36,157 @@ import com.ss.craig.week.two.weekend.assignment.repositories.PassengerRepository
  */
 @Controller
 @RequestMapping(path = "/admin/", produces = MediaType.TEXT_HTML_VALUE)
-public class AdminPassengerController {
-    private final String VIEW_EDIT_STR = "What would you like to view/edit?";
-    private final String CREATE_YOUR_STR = "Create your passenger:";
-    private final String CHOOSE_OBJ_STR = "Choose the passenger to ";
-    private final String FAILED_STR = " failed: not a valid ";
-    private final String OBJECT_STR = "Passenger";
-    private final String TEMPLATE_STR = "admin_passengers";
-    private final String MAPPING_STR = "/passengers";
-    
+public class AdminPassengerController extends AdminController{
+    private final String OBJECT_STR = "passenger";
+    private final String[] COLUMN_NAMES = {
+            "ID",
+            "BOOKING ID",
+            "AIRPLANE ID",
+            "SEAT NUMBER",
+            "ADDRESS",
+            "DATE OF BIRTH",
+            "GIVEN NAME",
+            "FAMILY NAME",
+            "GENDER"
+    };
+
     @Autowired
     private PassengerRepository object_repo;
     @Autowired
+    private AirplaneRepository airplane_repo;
+    @Autowired
     private BookingRepository booking_repo;
     
-    @PostMapping(value = MAPPING_STR)
+    @PostMapping(value = "/"+OBJECT_STR+"s")
     public String passengerSubmit(@ModelAttribute Passenger form_result, 
             @RequestParam(name = "form_action", defaultValue = "update")String form_action, 
-            @RequestParam(name = "object_id", defaultValue = "")String object_id,
+            @RequestParam(name = "object_id", defaultValue = "")String object_id, 
             Model model) throws PropertyValueException
     {
         if (form_action.equals("read"))
         {
-            addPostAttributes(model, form_result, object_id, "Read");
+            addPostAttributes(model, OBJECT_STR, form_result, object_id, "Read");
         }
         else if (form_action.equals("update"))
         {
-            addPostAttributes(model, form_result, object_id, "Updated");
+            addPostAttributes(model, OBJECT_STR, form_result, object_id, "Updated");
         }
-        else if (form_action.equals("add"))
+        else if (form_action.equals("create"))
         {
-            addPostAttributes(model, form_result, object_id, "Created");
+            addPostAttributes(model, OBJECT_STR, form_result, object_id, "Created");
         }
         else if (form_action.equals("delete"))
         {
-            object_repo.delete(object_repo.findById(Integer.parseInt(object_id)));
-            model = addPostAttributes(model, form_result, object_id, "Deleted");
+            try
+            {
+                object_repo.delete(object_repo.findById(parseIntSafe(object_id)));
+            }
+            catch (Exception e)
+            {
+            }
+            model = addPostAttributes(model, OBJECT_STR, form_result, object_id, "Deleted");
         }
         return TEMPLATE_STR;
     }
     
-    @GetMapping(value = MAPPING_STR)
+    @GetMapping(value = "/"+OBJECT_STR+"s")
     public String adminPassengers(
-            @RequestParam(name = "action", defaultValue = "choose") String action,
+            @RequestParam(name = "action", defaultValue = "choose") String get_action,
             @RequestParam(name = "object_id", defaultValue = "") String object_id,
             Model model)
-    {
-        Passenger empty_object = new Passenger();    
-        if (action.equals("choose"))
+    {     
+        if (get_action.equals("choose"))
         { 
-            model = addGetAttributes(model, Arrays.asList("choices_display"), VIEW_EDIT_STR, empty_object, "", "");
+            model = addChoicesAttributes(model, OBJECT_STR);
         }
-        else if (action.equals("list"))
+        else if (get_action.equals("list"))
         {
-            model = addListAttributes(model, VIEW_EDIT_STR, (List<Passenger>) object_repo.findAll(), empty_object);
+            model = addListAttributes(model, OBJECT_STR, StreamSupport.stream(object_repo.findAll().spliterator(), false)
+                    .collect(Collectors.toList()), COLUMN_NAMES);
         }
-        else if (action.equals("add"))
-        { 
-            model = addGetAttributes(model, Arrays.asList("form_display"), CREATE_YOUR_STR, empty_object, "add", "");
-        }
-        else if (action.equals("delete_id"))
+        else if (get_action.equals("read_id") || get_action.equals("update_id") || get_action.equals("delete_id"))
         {
-            int id = parseIntSafe(object_id);         
-            if (id > 0 && object_repo.existsById(id))
-            {
-                model = addGetAttributes(model, Arrays.asList("form_display"), "Delete your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "delete", object_id);
-            }
-            else
-            {
-                model = addGetAttributes(model, Arrays.asList("choices_display"), "Delete "+FAILED_STR+" id", empty_object, "choose", "");
-            }
+            model = addFormAttributes(model, object_id, OBJECT_STR, get_action.substring(0,get_action.length()-3));
         }
-        else if (action.equals("delete"))
+        else if (get_action.equals("create"))
         {
-            model = addGetAttributes(model, Arrays.asList("id_form_display"), CHOOSE_OBJ_STR+"delete:", empty_object, "delete_id", "");
+            model = addFormAttributes(model, object_id, OBJECT_STR, get_action);
         }
-        else if (action.equals("update_id"))
+        else if (get_action.equals("read") || get_action.equals("update") || get_action.equals("delete"))
         {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
-            {
-                model = addGetAttributes(model, Arrays.asList("form_display"), "Update your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "update", object_id);
-            }
-            else
-            {
-                model = addGetAttributes(model, Arrays.asList("choices_display"), "Update "+FAILED_STR+" id", empty_object, "choose", "");
-            }
-        }
-        else if (action.equals("update"))
-        {
-            model = addGetAttributes(model, Arrays.asList("id_form_display"), CHOOSE_OBJ_STR+"update:", empty_object, "update_id", "");
-        }
-        else if (action.equals("read_id"))
-        {
-            int id = parseIntSafe(object_id);
-            if (id > 0 && object_repo.existsById(id))
-            {
-                model = addGetAttributes(model, Arrays.asList("form_display"), "Read your "+OBJECT_STR.toLowerCase()+":", object_repo.findById(id), "read", object_id);
-            }
-            else
-            {
-                model = addGetAttributes(model, Arrays.asList("choices_display"), "Read "+FAILED_STR+" id", empty_object, "choose", "");
-            }
-        }
-        else if (action.equals("read"))
-        {
-            model = addGetAttributes(model, Arrays.asList("id_form_display"),
-                    CHOOSE_OBJ_STR+"read:", empty_object, "read_id", "");
+            model = addIdFormAttributes(model, OBJECT_STR, get_action);
+            model.addAttribute("field_id", "Passenger ID:");
         }
         return TEMPLATE_STR;
     }
     
-    private int parseIntSafe(String num)
+    private Model addFormAttributes(Model model, String object_id, String obj_name, String form_action)
     {
-        int id = 0;
-        try
+        if ((!object_id.equals("") && object_repo.existsById(parseIntSafe(object_id))) || form_action.equals("create"))
         {
-            id = Integer.parseInt(num);
+            model.addAttribute("form_display", "display");
+            model.addAttribute("header_text", capitolizeFirst(form_action)+" your "+obj_name.toLowerCase()+":");
+            model.addAttribute("form_action", form_action);
+            model.addAttribute("object_id", object_id);
+            model.addAttribute("obj_name", obj_name);
+            model.addAttribute("form_result", getEmptyObject());
+            model = getFormAttributes(model, object_repo.findById(parseIntSafe(object_id)));
         }
-        catch(Exception e)
-        {   
-            id = -1;
-        } 
-        return id;
-    }
-
-    private Model addListAttributes(Model model, String header, List<Passenger> all, Passenger obj)
-    {        
-        model.addAttribute("choices_display", "display");
-        model.addAttribute("header_text", header);
-        model.addAttribute("form_result", obj);
-        model.addAttribute("form_action", "list_all");
-        model.addAttribute("obj_list", all);
-        model.addAttribute("object_id", "");
+        else
+        {
+            model = addChoicesAttributes(model, obj_name);
+            model.addAttribute("header_text", FAILED_STR+" id");
+        }
         return model;
     }
     
-    private Model addGetAttributes(Model model, List<String> displays,
-            String header, Passenger form_result, String form_action, String object_id)
-    {
-        if (form_result.getBooking() == null)
-        {
-            form_result.setBooking(new Booking());
-        }
-        displays.stream().forEach(s -> model.addAttribute(s,"display"));
-        model.addAttribute("header_text", header);
+    private Model addListAttributes(Model model, String obj_name, List<Passenger> all, String[] column_names)
+    {       
+        addChoicesAttributes(model, obj_name);
+        model.addAttribute("form_action", "list_all");
+        model.addAttribute("obj_list", all);
+        model.addAttribute("column_names", column_names);
+        model.addAttribute("all_fields_lists", getAllFieldsLists(all));
+        return model;
+    }
+
+    private Model addResultAttributes(Model model, String obj_name, Object form_result, String verb, String object_id, boolean successful)
+    {      
+        model.addAttribute("result_display", "display");
         model.addAttribute("form_result", form_result);
-        model.addAttribute("form_action", form_action);
         model.addAttribute("object_id", object_id);
-        return model;        
+        model.addAttribute("column_names", COLUMN_NAMES);
+        
+        if (successful)
+        {
+            
+            Map<String, String> fields_map = IntStream.range(0, COLUMN_NAMES.length).boxed()
+                    .collect(Collectors.toMap(Arrays.asList(COLUMN_NAMES)::get, getFieldsList((Passenger)form_result)::get));
+            model.addAttribute("fields_map", fields_map);
+            model.addAttribute("form_action", capitolizeFirst(verb)); 
+            addChoicesAttributes(model, obj_name);
+        }
+        else 
+        {
+            model.addAttribute("form_action", "Not "+capitolizeFirst(verb));
+            addChoicesAttributes(model, obj_name);
+        }
+        return model;
     }
     
-    private Model addPostAttributes(Model model, Passenger form_result, String object_id, String verb)
+    private Model addPostAttributes(Model model, String obj_name, Passenger form_result, String object_id, String verb)
     {
         form_result.setBooking(booking_repo.findById(form_result.getBooking().getId()));
+        form_result.setAirplane(airplane_repo.findById(form_result.getAirplane().getId()));
         if (form_result != null && form_result.getBooking() != null)
         {
             Passenger result = form_result;
+            boolean is_success = true;
             if (verb.equals("Read") || verb.equals("Updated") || verb.equals("Deleted"))
             {
+                result.setId(parseIntSafe(object_id));
                 try
                 {
-                    result.setId(parseIntSafe(object_id));
                     if (verb.equals("Updated"))
                     {
                         result = object_repo.save(form_result);
@@ -198,6 +194,7 @@ public class AdminPassengerController {
                 }
                 catch (Exception e)
                 {
+                    is_success = false;
                     object_id = Integer.toString(form_result.getId());
                 }
             }
@@ -205,15 +202,73 @@ public class AdminPassengerController {
             {
                 result = object_repo.save(form_result);
             }
-            model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
-                    VIEW_EDIT_STR, result, verb, Integer.toString(result.getId()));
+            model = addResultAttributes(model, obj_name, result, verb, Integer.toString(result.getId()), is_success);
         }
         else
         {                
-            model = addGetAttributes(model, Arrays.asList("result_display","choices_display"), 
-                    VIEW_EDIT_STR, form_result, "Not "+verb, object_id);
+            model = addResultAttributes(model, obj_name, form_result, verb, Integer.toString(form_result.getId()), false);
         }
         return model;
     }
     
+    private Model getFormAttributes(Model model, Passenger passenger)
+    {
+        Map<String, List<String>> fields_map = new HashMap<>();
+        if (passenger != null && passenger.getId() > 0)
+        {
+            fields_map.put("address", Arrays.asList("Address:", passenger.getAddress()));
+            fields_map.put("dob", Arrays.asList("Date of Birth:", passenger.getDob()));
+            fields_map.put("givenName", Arrays.asList("Given Name:", passenger.getGivenName()));  
+            fields_map.put("familyName", Arrays.asList("Family Name:", passenger.getFamilyName()));    
+            fields_map.put("booking.id", Arrays.asList("Booking ID:", Integer.toString(passenger.getBooking().getId())));  
+            fields_map.put("airplane.id", Arrays.asList("Airplane ID:", Integer.toString(passenger.getAirplane().getId()))); 
+            fields_map.put("seatNumber", Arrays.asList("Seat Number:", Integer.toString(passenger.getSeatNumber()))); 
+            fields_map.put("gender", Arrays.asList("Gender:", passenger.getGivenName()));  
+            model.addAttribute("text_inputs", fields_map);
+        }
+        else
+        {
+            fields_map.put("address", Arrays.asList("Address:", ""));
+            fields_map.put("dob", Arrays.asList("Date of Birth:", ""));
+            fields_map.put("givenName", Arrays.asList("Given Name:", ""));  
+            fields_map.put("familyName", Arrays.asList("Family Name:", ""));    
+            fields_map.put("booking.id", Arrays.asList("Booking ID:", ""));  
+            fields_map.put("airplane.id", Arrays.asList("Airplane ID:", "")); 
+            fields_map.put("seatNumber", Arrays.asList("Seat Number:", ""));
+            fields_map.put("gender", Arrays.asList("Gender:", ""));  
+            model.addAttribute("text_inputs", fields_map);
+        }
+        
+        return model;
+    }
+    
+    private List<String> getFieldsList(Passenger passenger)
+    {
+        List<String> fields_list = new ArrayList<>();
+        fields_list.add(Integer.toString(passenger.getId()));
+        fields_list.add(Integer.toString(passenger.getBooking().getId()));
+        fields_list.add(Integer.toString(passenger.getAirplane().getId()));
+        fields_list.add(Integer.toString(passenger.getSeatNumber()));
+        fields_list.add(passenger.getAddress());
+        fields_list.add(passenger.getDob());
+        fields_list.add(passenger.getGivenName());
+        fields_list.add(passenger.getFamilyName());
+        fields_list.add(passenger.getGender());
+        return fields_list;
+    }
+    
+    private List<List<String>> getAllFieldsLists(List<Passenger> all)
+    {
+        List<List<String>> all_fields_list = new ArrayList<>();
+        all.stream().forEach(f -> all_fields_list.add(getFieldsList(f)));
+        return all_fields_list;
+    }
+    
+    private Passenger getEmptyObject()
+    {
+        Passenger a = new Passenger();
+        a.setBooking(new Booking());
+        a.setAirplane(new Airplane());
+        return a;
+    }
 }

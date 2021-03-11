@@ -5,7 +5,6 @@ package com.ss.craig.week.two.weekend.assignment.jpaentities;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,15 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
-@Entity(name="airplane")
-public class Airplane implements Serializable {
+@Entity(name="seat")
+public class Seat implements Serializable {
 
     /**
      * 
      */
-    private static final long serialVersionUID = -3175872469169479709L;
+    private static final long serialVersionUID = 5285035957111133066L;
 
     /** Primary key. */
     protected static final String PK = "id";
@@ -31,18 +29,14 @@ public class Airplane implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(unique=true, nullable=false, precision=10)
     private int id;
+    @Column(name="seat_number", nullable=false, precision=10)
+    private int seatNumber;
     @ManyToOne(optional=false)
-    @JoinColumn(name="type_id", nullable=false)
-    private AirplaneType airplaneType;
-    @OneToMany(mappedBy="airplane")
-    private Set<Passenger> passenger;
-    @OneToMany(mappedBy="airplane")
-    private Set<Seat> seat;
-    @OneToMany(mappedBy="airplane")
-    private Set<Flight> flight;
+    @JoinColumn(name="airplane_id", nullable=false)
+    private Airplane airplane;
 
     /** Default constructor. */
-    public Airplane() {
+    public Seat() {
         super();
     }
 
@@ -65,91 +59,55 @@ public class Airplane implements Serializable {
     }
 
     /**
-     * Access method for airplaneType.
+     * Access method for seatNumber.
      *
-     * @return the current value of airplaneType
+     * @return the current value of seatNumber
      */
-    public AirplaneType getAirplaneType() {
-        return airplaneType;
+    public int getSeatNumber() {
+        return seatNumber;
     }
 
     /**
-     * Setter method for airplaneType.
+     * Setter method for seatNumber.
      *
-     * @param aAirplaneType the new value for airplaneType
+     * @param aSeatNumber the new value for seatNumber
      */
-    public void setAirplaneType(AirplaneType aAirplaneType) {
-        airplaneType = aAirplaneType;
+    public void setSeatNumber(int aSeatNumber) {
+        seatNumber = aSeatNumber;
     }
 
     /**
-     * Access method for passenger.
+     * Access method for airplane.
      *
-     * @return the current value of passenger
+     * @return the current value of airplane
      */
-    public Set<Passenger> getPassenger() {
-        return passenger;
+    public Airplane getAirplane() {
+        return airplane;
     }
 
     /**
-     * Setter method for passenger.
+     * Setter method for airplane.
      *
-     * @param aPassenger the new value for passenger
+     * @param aAirplane the new value for airplane
      */
-    public void setPassenger(Set<Passenger> aPassenger) {
-        passenger = aPassenger;
+    public void setAirplane(Airplane aAirplane) {
+        airplane = aAirplane;
     }
 
     /**
-     * Access method for seat.
-     *
-     * @return the current value of seat
-     */
-    public Set<Seat> getSeat() {
-        return seat;
-    }
-
-    /**
-     * Setter method for seat.
-     *
-     * @param aSeat the new value for seat
-     */
-    public void setSeat(Set<Seat> aSeat) {
-        seat = aSeat;
-    }
-
-    /**
-     * Access method for flight.
-     *
-     * @return the current value of flight
-     */
-    public Set<Flight> getFlight() {
-        return flight;
-    }
-
-    /**
-     * Setter method for flight.
-     *
-     * @param aFlight the new value for flight
-     */
-    public void setFlight(Set<Flight> aFlight) {
-        flight = aFlight;
-    }
-
-    /**
-     * Compares the key for this instance with another Airplane.
+     * Compares the key for this instance with another Seat.
      *
      * @param other The object to compare to
-     * @return True if other object is instance of class Airplane and the key objects are equal
+     * @return True if other object is instance of class Seat and the key objects are equal
      */
     private boolean equalKeys(Object other) {
         if (this==other) {
             return true;
         }
-        if (!(other instanceof Airplane)) {
+        if (!(other instanceof Seat)) {
             return false;
         }
-        Airplane that = (Airplane) other;
+        Seat that = (Seat) other;
         if (this.getId() != that.getId()) {
             return false;
         }
@@ -157,15 +115,15 @@ public class Airplane implements Serializable {
     }
 
     /**
-     * Compares this instance with another Airplane.
+     * Compares this instance with another Seat.
      *
      * @param other The object to compare to
      * @return True if the objects are the same
      */
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Airplane)) return false;
-        return this.equalKeys(other) && ((Airplane)other).equalKeys(this);
+        if (!(other instanceof Seat)) return false;
+        return this.equalKeys(other) && ((Seat)other).equalKeys(this);
     }
 
     /**
@@ -189,7 +147,7 @@ public class Airplane implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("[Airplane |");
+        StringBuffer sb = new StringBuffer("[Seat |");
         sb.append(" id=").append(getId());
         sb.append("]");
         return sb.toString();

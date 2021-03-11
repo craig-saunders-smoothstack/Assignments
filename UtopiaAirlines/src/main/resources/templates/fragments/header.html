@@ -1,0 +1,51 @@
+<header th:fragment="headerFragment">
+		<title>Utopia Airlines</title> 
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<style>
+		.node {    
+			padding-right: 15px;
+		    padding-left: 15px;
+		    margin-right: auto;
+		    margin-left: auto;	
+		    width: 400px;
+		}
+		
+		.nodewide {    
+			padding-right: 15px;
+		    padding-left: 15px;
+		    margin-right: auto;
+		    margin-left: auto;	
+		    width: 1600px;	
+		    word-wrap: break-word;		
+		}
+		
+		.column {
+		    position: relative;
+		    min-height: 1px;
+		    padding-right: 15px;
+		    padding-left: 15px;
+		    float: left;
+		    }
+		    
+		.width_td {
+		    width: 160px;
+		    }
+		    
+		.full_width {
+		    width: 100%;
+		    }
+		</style>
+		<script>
+		  $(function () {
+		    $('#datetimepicker1').datetimepicker({
+		        format: 'YYYY-MM-DD HH:mm'
+		    });
+		 });
+		</script>
+</header>

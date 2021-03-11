@@ -7,9 +7,7 @@
 		</div>
 		<div th:if="${choices_display} == display" id='choices' class='node'>
 			<h3 th:text=${header_text}></h3><br />
-			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='create',user_type='agent')}" th:text="'Add '+${obj_name}+ ' with agent'"></a></h4>
-			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='create',user_type='user')}" th:text="'Add '+${obj_name}+ ' with user'"></a></h4>
-			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='create',user_type='agent')}" th:text="'Add '+${obj_name}+ ' with guest'"></a></h4>
+			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='create')}" th:text="'Add '+${obj_name}"></a></h4>
 			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='read')}" th:text="'Read '+${obj_name}"></a></h4>
 			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='update')}" th:text="'Update '+${obj_name}"></a></h4>
 			<h4><a th:href="@{('/admin/'+${obj_name}+'s')(action='delete')}" th:text="'Delete '+${obj_name}"></a></h4>

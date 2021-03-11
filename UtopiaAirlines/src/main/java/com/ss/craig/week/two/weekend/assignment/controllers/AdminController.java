@@ -3,28 +3,50 @@
  */
 package com.ss.craig.week.two.weekend.assignment.controllers;
 
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.ui.Model;
 
 /**
  * @author Craig Saunders
  *
  */
-@Controller
-@RequestMapping(path = "/admin/", produces = MediaType.TEXT_HTML_VALUE)
-public class AdminController {
-    
-    @GetMapping(value = "/seats")
-    public String admin_seats()
+public abstract class AdminController {
+    protected final String VIEW_EDIT_STR = "What would you like to view/edit?";
+    protected final String FAILED_STR = "Not a valid ";
+    protected final String TEMPLATE_STR = "admin";
+
+    protected Model addChoicesAttributes(Model model, String obj_name)
     {
-        return "admin_seats";
+        model.addAttribute("choices_display", "display");
+        model.addAttribute("header_text", VIEW_EDIT_STR);
+        model.addAttribute("obj_name", obj_name);
+        return model;
     }
-    @GetMapping(value = "/booking_override")
-    public String admin_override()
+    
+    protected Model addIdFormAttributes(Model model, String obj_name, String action)
     {
-        return "admin_override";
+        model.addAttribute("id_form", "display");
+        model.addAttribute("header_text", "Choose the "+obj_name+" to "+action);
+        model.addAttribute("form_action", action+"_id");
+        model.addAttribute("obj_name", obj_name);
+        return model;
+    }
+    
+    protected String capitolizeFirst(String str)
+    {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+    
+    protected int parseIntSafe(String num)
+    {
+        int id = 0;
+        try
+        {
+            id = Integer.parseInt(num);
+        }
+        catch(Exception e)
+        {   
+            id = -1;
+        } 
+        return id;
     }
 }
