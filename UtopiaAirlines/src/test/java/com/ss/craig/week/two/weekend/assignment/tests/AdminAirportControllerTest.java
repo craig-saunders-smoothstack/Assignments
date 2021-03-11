@@ -5,15 +5,14 @@ package com.ss.craig.week.two.weekend.assignment.tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
-import java.util.Map;
+//import java.util.HashMap;\
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.ui.Model;
+//import org.springframework.ui.Model;
 
 /**
  * @author Craig Saunders
